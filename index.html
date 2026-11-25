@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASA Beach Tennis · protótipo de site e sistema</title>
+<meta name="theme-color" content="#061640">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="asa.css">
+<style>
+  .largura { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+  @media (min-width: 900px) { .largura { padding: 0 40px; } }
+  section { padding: 76px 0; }
+  @media (min-width: 900px) { section { padding: 112px 0; } }
+
+  .capa { position: relative; min-height: 92svh; display: flex; align-items: flex-end; overflow: hidden; padding: 0; }
+  .capa-foto { position: absolute; inset: 0; background: url(img/arena.jpg) center 35% / cover; }
+  .capa-foto::before { content: ""; position: absolute; inset: 0; background: var(--azul); mix-blend-mode: color; opacity: .3; }
+  .capa-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,22,64,.7) 0%, rgba(6,22,64,.35) 35%, rgba(6,22,64,.92) 78%, var(--noite) 100%); }
+  .capa .largura { position: relative; z-index: 2; padding-top: 110px; padding-bottom: 56px; width: 100%; }
+  .capa .titulo-xl { max-width: 13ch; margin: 18px 0 22px; font-size: clamp(42px, 7.6vw, 96px); }
+  .capa .titulo-xl em { color: #ffb58a; }
+  .capa p.lead { max-width: 52ch; font-size: 17.5px; color: rgba(255,255,255,.82); margin: 0 0 28px; }
+  .topo-capa { position: absolute; top: 0; left: 0; right: 0; z-index: 3; }
+  .topo-capa .largura { display: flex; justify-content: space-between; align-items: center; height: 72px; padding-top: 0; padding-bottom: 0; }
+
+  .cabeca { display: grid; gap: 14px; margin-bottom: 40px; }
+  @media (min-width: 900px) { .cabeca { grid-template-columns: 1fr 1fr; align-items: end; gap: 60px; margin-bottom: 56px; } }
+  .cabeca p { margin: 0; font-size: 16.5px; max-width: 48ch; }
+
+  .fatos { display: grid; gap: 12px; }
+  @media (min-width: 760px) { .fatos { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1100px) { .fatos { grid-template-columns: repeat(3, 1fr); } }
+  .fato { padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .fato h3 { margin: 0; font-family: var(--titulo); font-weight: 400; font-size: 23px; line-height: 1.15; }
+  .fato p { margin: 0; font-size: 14.5px; }
+  .fato .depois { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--linha); font-size: 13.5px; font-weight: 600; color: var(--azul); display: flex; gap: 8px; }
+  .fonte { font-size: 11.5px; color: var(--tinta-3); }
+  .fonte a { color: inherit; }
+
+  .portas { display: grid; gap: 14px; }
+  @media (min-width: 900px) { .portas { grid-template-columns: 1fr 1fr; } }
+  .porta { display: grid; grid-template-columns: 1fr; border-radius: 26px; overflow: hidden; text-decoration: none; min-height: 420px; }
+  @media (min-width: 560px) { .porta { grid-template-columns: 1fr 210px; } }
+  .porta .txt { padding: 26px; display: flex; flex-direction: column; gap: 12px; }
+  .porta h3 { margin: 0; font-family: var(--titulo); font-weight: 300; font-size: 34px; line-height: 1.05; letter-spacing: -.02em; }
+  .porta p { margin: 0; font-size: 14.5px; opacity: .85; }
+  .porta ul { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 13.5px; }
+  .porta ul li::before { content: "→ "; opacity: .6; }
+  .porta .abrir { margin-top: auto; align-self: flex-start; }
+  .porta .tela-mini { position: relative; overflow: hidden; min-height: 300px; }
+  .porta .tela-mini img { position: absolute; left: 14px; right: 14px; top: 26px; width: calc(100% - 28px); border-radius: 22px; box-shadow: 0 24px 50px -24px rgba(0,0,0,.6); }
+  .porta.larga .tela-mini img { left: 18px; width: 170%; max-width: none; border-radius: 14px; }
+  .porta:hover .tela-mini img { transform: translateY(-6px); }
+  .porta .tela-mini img { transition: transform .35s ease; }
+
+  .tres { display: grid; gap: 12px; }
+  @media (min-width: 900px) { .tres { grid-template-columns: repeat(3, 1fr); } }
+  .coluna { padding: 24px; border-radius: 22px; }
+  .coluna h3 { margin: 10px 0 14px; font-family: var(--titulo); font-weight: 400; font-size: 26px; line-height: 1.1; }
+  .coluna ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 14.5px; }
+  .coluna li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; }
+
+  .numeros { display: grid; gap: 12px; }
+  @media (min-width: 760px) { .numeros { grid-template-columns: 1fr 1fr; } }
+  .num { padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .num .numero { font-size: clamp(48px, 6vw, 68px); color: #fff; }
+  .num .numero small { font-size: .42em; letter-spacing: 0; margin-left: 4px; color: rgba(244,241,234,.6); }
+  .num p { margin: 0; font-size: 14.5px; color: rgba(244,241,234,.8); }
+  .num .fonte { color: rgba(244,241,234,.5); margin-top: auto; }
+  .num-claro { background: rgba(255,255,255,.05); border: 1px solid var(--linha-clara); border-radius: 22px; }
+
+  .passos { display: grid; gap: 0; border-top: 1px solid var(--linha); }
+  .passo { display: grid; grid-template-columns: 64px 1fr; gap: 6px 18px; padding: 24px 0; border-bottom: 1px solid var(--linha); }
+  @media (min-width: 900px) { .passo { grid-template-columns: 120px 280px 1fr; align-items: baseline; } }
+  .passo .numero { font-size: 40px; color: var(--azul); }
+  .passo h3 { margin: 0; font-family: var(--titulo); font-weight: 400; font-size: 24px; }
+  .passo p { margin: 0; font-size: 15px; grid-column: 2; }
+  @media (min-width: 900px) { .passo p { grid-column: 3; } }
+
+  footer { padding: 40px 0 60px; }
+  footer .largura { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; align-items: center; }
+</style>
+</head>
+<body class="chao-areia">
+
+<section class="capa chao-noite">
+  <div class="capa-foto" role="img" aria-label="Entrada da arena ASA com as quadras e os coqueiros"></div>
+  <div class="topo-capa"><div class="largura"><span class="marca" id="marca"></span><span class="chip chip-noite">Protótipo · novembro de 2026</span></div></div>
+  <div class="largura">
+    <span class="rotulo" style="color:rgba(255,255,255,.7)">Proposta para o ASA Beach Tennis</span>
+    <h1 class="titulo-xl">A primeira arena de Sergipe, <em>com a agenda na mão de todo mundo.</em></h1>
+    <p class="lead">O ASA tem 12 quadras, o Verano, professores que jogam o circuito e recebeu o ITF BT100 em janeiro. Hoje quase tudo isso passa por direct, story e grupo de WhatsApp. Este protótipo mostra como fica quando o jogador vê quem vai antes de sair de casa, o professor para de contar vaga na mão e a gerência enxerga onde a arena enche e onde sobra quadra.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="botao botao-sol" href="#telas">Ver as quatro telas</a>
+      <a class="botao botao-linha" href="#professores" style="color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)">E os professores?</a>
+    </div>
+  </div>
+</section>
+
+<section class="chao-areia" id="vimos">
+  <div class="largura">
+    <div class="cabeca">
+      <div><span class="rotulo">01 · O que vimos</span><h2 class="titulo-l" style="margin-top:12px">Lido no Instagram <em>e no Google.</em></h2></div>
+      <p class="suave">Olhamos os dois perfis da arena, os destaques, o link da bio e as fichas do Google em 25 de novembro. Nada aqui é crítica: é o que um cliente novo encontra hoje quando procura o ASA.</p>
+    </div>
+    <div class="fatos">
+      <div class="cartao fato">
+        <span class="rotulo">Day use</span>
+        <h3>“Chama no direct pra garantir o seu sábado.”</h3>
+        <p class="suave">A reserva do day use é feita por mensagem. Quem pergunta à noite espera a resposta no dia seguinte, e a recepção não sabe quantos vêm.</p>
+        <div class="depois"><span>→</span><span>Reserva e Pix no app, a qualquer hora, com o número de pessoas por período.</span></div>
+      </div>
+      <div class="cartao fato">
+        <span class="rotulo">Google · 4,7 com 26 avaliações</span>
+        <h3>As duas notas 1 contam o mesmo episódio.</h3>
+        <p class="suave">Visitantes de day use foram cobrados no meio do jogo porque o pagamento não estava registrado. A resposta da arena confirma que cobra quando não vê o registro.</p>
+        <div class="depois"><span>→</span><span>Day use pago antes de chegar. A recepção vê o nome como pago e ninguém é cobrado na areia.</span></div>
+      </div>
+      <div class="cartao fato">
+        <span class="rotulo">Google · ficha antiga</span>
+        <h3>A Murilo Dantas ainda aparece no mapa.</h3>
+        <p class="suave">A ficha do endereço antigo continua ativa, com horário, outro telefone e sem dono. Um cliente novo pode ir parar no lugar errado.</p>
+        <div class="depois"><span>→</span><span>Assumir a ficha antiga e apontar tudo para o Central Garden e para o site.</span></div>
+      </div>
+      <div class="cartao fato">
+        <span class="rotulo">Link da bio</span>
+        <h3>Ainda leva à Farolândia e à Atalaia.</h3>
+        <p class="suave">O link da bio mostra o WhatsApp “ASA Farolândia”, “ASA Atalaia” e as fotos da Copa TV Atalaia 2023. Não existe site da arena.</p>
+        <div class="depois"><span>→</span><span>Um site só, com aulas, day use, quadras, eventos, torneios e o mapa certo.</span></div>
+      </div>
+      <div class="cartao fato">
+        <span class="rotulo">Programação</span>
+        <h3>“Confira nos stories.”</h3>
+        <p class="suave">Pagode de sábado, Play do sábado, Day Use Pais e Filhos, feijoada de sexta: a programação vive nos stories e some em 24 horas.</p>
+        <div class="depois"><span>→</span><span>Agenda da semana no site e no app, com “eu vou” e lembrete no dia.</span></div>
+      </div>
+      <div class="cartao fato">
+        <span class="rotulo">Aulas</span>
+        <h3>Cada professor com seu grupo de WhatsApp.</h3>
+        <p class="suave">Quem vai, quem falta e quem quer entrar numa turma cheia fica espalhado em conversas. Não existe lista de espera, e a vaga de quem falta fica vazia.</p>
+        <div class="depois"><span>→</span><span>Vou / Não vou pelo WhatsApp da arena e fila que chama sozinha.</span></div>
+      </div>
+    </div>
+    <p class="fonte" style="margin-top:18px">Fontes: @asabeachtennis e @arenaasabeach (posts e destaques), linkbio.co/asabeachtennis e as duas fichas do ASA no Google Maps, consultados em 25/11/2026.</p>
+  </div>
+</section>
+
+<section class="chao-noite" id="telas">
+  <div class="largura">
+    <div class="cabeca">
+      <div><span class="rotulo">02 · O protótipo</span><h2 class="titulo-l" style="margin-top:12px">Quatro telas, <em>quatro pessoas.</em></h2></div>
+      <p class="suave">Tudo abre no celular e funciona ao toque. Os nomes dos professores, o endereço, os horários e o day use são do ASA. Turmas, alunos, vagas e números são de exemplo.</p>
+    </div>
+    <div class="portas">
+      <a class="porta cartao-azul" href="app.html">
+        <div class="txt">
+          <span class="rotulo" style="color:rgba(255,255,255,.7)">Jogador e aluno</span>
+          <h3>Ninguém mais vai sozinho sem saber.</h3>
+          <p>Quantas pessoas vão estar na areia em cada horário, de que nível, e onde tem jogo aberto.</p>
+          <ul><li>“Tô indo às 19h”</li><li>Day use e quadra com Pix</li><li>Vou / Não vou e reposição</li></ul>
+          <span class="botao botao-branco botao-p abrir">Abrir o app</span>
+        </div>
+        <div class="tela-mini"><img src="img/telas/app-hoje.jpg" alt="Tela Hoje do app com o movimento por horário"></div>
+      </a>
+      <a class="porta cartao-noite" href="professor.html" style="background:var(--noite-2)">
+        <div class="txt">
+          <span class="rotulo">Professor</span>
+          <h3>O grupo continua. A parte chata sai.</h3>
+          <p>A arena pergunta quem vai, conta as vagas e chama a lista de espera. O professor recebe a lista pronta.</p>
+          <ul><li>Lista do dia no WhatsApp</li><li>Experimental com horário marcado</li><li>Aviso de aluno sumindo</li></ul>
+          <span class="botao botao-sol botao-p abrir">Abrir o painel</span>
+        </div>
+        <div class="tela-mini"><img src="img/telas/prof-whats-aluno.jpg" alt="Conversa do WhatsApp com os botões Vou e Não vou"></div>
+      </a>
+      <a class="porta cartao" href="site.html" style="color:var(--tinta)">
+        <div class="txt">
+          <span class="rotulo">Site</span>
+          <h3>O link da bio vira o ASA inteiro.</h3>
+          <p class="suave">Movimento de hoje, turmas com vaga, day use, quadras, jogos abertos, eventos, torneios e como chegar.</p>
+          <ul class="suave"><li>Aula experimental grátis em 3 toques</li><li>Programação que não some</li><li>Endereço e horário certos</li></ul>
+          <span class="botao botao-azul botao-p abrir">Abrir o site</span>
+        </div>
+        <div class="tela-mini" style="background:var(--areia-2)"><img src="img/telas/site-celular.jpg" alt="Capa do site no celular"></div>
+      </a>
+      <a class="porta cartao larga" href="gestao.html" style="color:var(--tinta)">
+        <div class="txt">
+          <span class="rotulo">Gerência</span>
+          <h3>Onde enche, onde sobra e quem está sumindo.</h3>
+          <p class="suave">Ocupação por dia e hora, receita por tipo, lista de espera, conversão das experimentais e presença por professor.</p>
+          <ul class="suave"><li>Mapa de calor das 12 quadras</li><li>Dinheiro na mesa da semana</li><li>Alunos em risco</li></ul>
+          <span class="botao botao-azul botao-p abrir">Abrir a gestão</span>
+        </div>
+        <div class="tela-mini" style="background:var(--areia-2)"><img src="img/telas/gestao.jpg" alt="Painel de gestão com o mapa de ocupação"></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="chao-areia" id="professores">
+  <div class="largura">
+    <div class="cabeca">
+      <div><span class="rotulo">03 · Para os professores</span><h2 class="titulo-l" style="margin-top:12px">Ninguém tira o WhatsApp <em>de ninguém.</em></h2></div>
+      <p class="suave">Professor prefere WhatsApp porque é onde o aluno responde. Por isso o sistema conversa pelo WhatsApp também: o aluno não instala nada para confirmar aula, e o grupo da turma segue do jeito que é.</p>
+    </div>
+    <div class="tres">
+      <div class="coluna cartao">
+        <span class="rotulo">Continua igual</span>
+        <h3>O grupo e o jeito de dar aula</h3>
+        <ul class="suave"><li><span>✓</span><span>O grupo da turma, com resenha, foto e vídeo</span></li><li><span>✓</span><span>A conversa direta com o aluno</span></li><li><span>✓</span><span>O método, a turma e o horário de cada um</span></li></ul>
+      </div>
+      <div class="coluna cartao-noite">
+        <span class="rotulo">Sai da mão do professor</span>
+        <h3>O trabalho que ninguém paga</h3>
+        <ul style="color:rgba(244,241,234,.8)"><li><span>✕</span><span>Perguntar no grupo quem vai</span></li><li><span>✕</span><span>Contar vaga e achar quem cubra a falta</span></li><li><span>✕</span><span>Lembrar e cobrar aluno no privado</span></li><li><span>✕</span><span>Responder “tem vaga?” às 23h</span></li></ul>
+      </div>
+      <div class="coluna cartao-azul">
+        <span class="rotulo" style="color:rgba(255,255,255,.7)">O professor ganha</span>
+        <h3>Turma cheia sem correr atrás</h3>
+        <ul style="color:rgba(255,255,255,.88)"><li><span>↑</span><span>A vaga de quem falta vai para a fila sozinha</span></li><li><span>↑</span><span>Experimental chega com horário marcado</span></li><li><span>↑</span><span>Aviso de aluno sumindo antes de ele cancelar</span></li></ul>
+      </div>
+    </div>
+    <div class="cartao" style="margin-top:12px;padding:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between">
+      <span><b style="font-size:17px">Começa com uma turma só.</b><span class="suave" style="display:block;font-size:14.5px">Um professor topa testar por 30 dias com uma turma. Os outros veem o resultado antes de decidir.</span></span>
+      <a class="botao botao-azul botao-p" href="professor.html">Ver o que o professor recebe</a>
+    </div>
+  </div>
+</section>
+
+<section class="chao-noite" id="numeros">
+  <div class="largura">
+    <div class="cabeca">
+      <div><span class="rotulo">04 · Por que vale</span><h2 class="titulo-l" style="margin-top:12px">Frequência segura aluno. <em>Lembrete traz frequência.</em></h2></div>
+      <p class="suave">Não existe estudo de arena de beach tennis em Sergipe. Os números abaixo vêm de pesquisas com academias e com lembretes de compromisso, e de uma conta simples com as quadras do ASA. Cada um tem a fonte.</p>
+    </div>
+    <div class="numeros">
+      <div class="num num-claro">
+        <span class="rotulo">Abandono</span>
+        <span class="numero">1,5 a 1,9<small>vez mais</small></span>
+        <p>Em Natal, quem ia à academia 3 vezes ou menos por mês abandonou 1,5 a 1,9 vez mais do que quem ia 7 vezes ou mais. Metade dos alunos saiu em 3 meses.</p>
+        <span class="fonte">Oliveira et al., Revista Brasileira de Ciências do Esporte, 2021 · 3.802 clientes · <a href="https://www.scielo.br/j/rbce/a/WtzM3gBFRkcrqY7xKZsVNnm/" target="_blank" rel="noopener">link</a></span>
+      </div>
+      <div class="num num-claro">
+        <span class="rotulo">Aula em grupo</span>
+        <span class="numero">+19%<small>de idas</small></span>
+        <p>Numa academia com cerca de 2.500 sócios, um lembrete semanal aumentou as idas às aulas em grupo em 19% e as idas em geral em 13%.</p>
+        <span class="fonte">Habla e Müller, Experimental Economics, 2021 · <a href="https://core-cms.cambridgecore.org/core/services/aop-cambridge-core/content/view/3A77551499C8CEF7738E64AB10DF8F35/S138641572101245Xa.pdf/experimental-evidence-of-limited-attention-at-the-gym.pdf" target="_blank" rel="noopener">link</a></span>
+      </div>
+      <div class="num num-claro">
+        <span class="rotulo">Faltas</span>
+        <span class="numero">79%<small>contra 68%</small></span>
+        <p>Com lembrete por mensagem, 78,6% das pessoas compareceram ao compromisso marcado. Sem lembrete, 67,8%.</p>
+        <span class="fonte">Revisão Cochrane, 2013 · consultas de saúde, 7 estudos · <a href="https://www.cochrane.org/evidence/CD007458_mobile-phone-messaging-reminders-attendance-healthcare-appointments" target="_blank" rel="noopener">link</a></span>
+      </div>
+      <div class="num num-claro">
+        <span class="rotulo">Conta com as quadras do ASA · estimativa</span>
+        <span class="numero">~888<small>horas de quadra por semana</small></span>
+        <p>12 quadras abertas cerca de 74 horas por semana, pelo horário do Google. Vender uma hora a mais por quadra por semana são uns 52 horas a mais no mês, sem obra nenhuma.</p>
+        <span class="fonte">Horário da ficha do ASA no Google Maps, 25/11/2026 · conta da Turma Cheia</span>
+      </div>
+    </div>
+    <div class="cartao-noite" style="margin-top:12px;padding:24px;background:rgba(255,255,255,.05);border:1px solid var(--linha-clara)">
+      <span class="rotulo">Em Aracaju</span>
+      <p style="margin:10px 0 0;font-size:16px;color:rgba(244,241,234,.85);max-width:70ch">Nas arenas de beach tennis da cidade que conferimos (Calu, Premier, D87, Ravenna), aula e quadra se marcam pelo WhatsApp. A primeira a mostrar quem vai jogar e a vender o day use pelo celular sai na frente. A Arena Calu tem hoje 9.765 seguidores no Instagram; o ASA, 5.742.</p>
+      <span class="fonte" style="color:rgba(244,241,234,.5);display:block;margin-top:12px">Instagram e Linktree de cada arena, consultados em 25/11/2026.</span>
+    </div>
+  </div>
+</section>
+
+<section class="chao-areia" id="comeco">
+  <div class="largura">
+    <div class="cabeca">
+      <div><span class="rotulo">05 · Como começa</span><h2 class="titulo-l" style="margin-top:12px">Um mês, <em>sem parar a arena.</em></h2></div>
+      <p class="suave">A arena continua funcionando como hoje enquanto o sistema entra por partes. Cada etapa já resolve alguma coisa sozinha.</p>
+    </div>
+    <div class="passos">
+      <div class="passo"><span class="numero">1</span><h3>Site e day use</h3><p class="suave">Na primeira semana o site entra no link da bio, com horário, endereço, programação e day use pago no Pix. A ficha antiga do Google é corrigida.</p></div>
+      <div class="passo"><span class="numero">2</span><h3>Uma turma piloto</h3><p class="suave">Um professor cadastra uma turma. Os alunos começam a receber o “Vou / Não vou” do número da arena e a fila de espera passa a valer.</p></div>
+      <div class="passo"><span class="numero">3</span><h3>Todas as turmas</h3><p class="suave">Com o piloto rodando, os outros professores entram. Quadras e jogos abertos vão para o app, e o movimento de cada horário aparece para todo mundo.</p></div>
+      <div class="passo"><span class="numero">4</span><h3>Gestão</h3><p class="suave">A gerência passa a ver ocupação, receita, lista de espera e alunos sumindo, e decide horário de turma nova e promoção com número na mão.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="chao-noite">
+  <div class="largura">
+    <span class="marca" id="marca-rodape"></span>
+    <span class="miudo" style="color:rgba(244,241,234,.6)">Protótipo feito pela Turma Cheia, o mesmo sistema que já roda num estúdio de Aracaju desde outubro de 2026.</span>
+  </div>
+</footer>
+
+<script src="dados.js"></script>
+<script>
+  document.getElementById("marca").innerHTML = ASA.marca("#fff") + `<span class="marca-sub" style="color:#fff">Arena Schuster<br>Aracaju</span>`;
+  document.getElementById("marca-rodape").innerHTML = ASA.marca("#fff") + `<span class="marca-sub" style="color:#fff">Beach<br>Tennis</span>`;
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gestão · ASA Beach Tennis</title>
+<meta name="theme-color" content="#061640">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="asa.css">
+<style>
+  body { min-height: 100vh; }
+  .largura { max-width: 1320px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 900px) { .largura { padding: 0 32px; } }
+
+  .barra { position: sticky; top: 0; z-index: 40; }
+  .barra .largura { display: flex; align-items: center; gap: 22px; height: 64px; }
+  .barra nav { display: none; gap: 4px; }
+  @media (min-width: 900px) { .barra nav { display: flex; } }
+  .barra nav a { text-decoration: none; font-size: 13.5px; font-weight: 700; padding: 8px 14px; border-radius: 99px; color: rgba(244,241,234,.7); }
+  .barra nav a.ativo { background: rgba(255,255,255,.1); color: #fff; }
+  .barra .dir { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .barra .marca svg { height: 22px; }
+
+  .titulo-linha { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; padding: 34px 0 22px; }
+  .titulo-linha h1 { margin: 6px 0 0; }
+
+  .grade { display: grid; gap: 14px; }
+  .grade > * { min-width: 0; }
+  body { overflow-x: hidden; }
+  .g4 { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 1000px) { .g4 { grid-template-columns: repeat(4, 1fr); } .g21 { grid-template-columns: 2fr 1fr; } .g11 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } }
+  .painel { padding: 20px; }
+  .painel-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .painel h2 { font-family: var(--titulo); font-weight: 400; font-size: 21px; margin: 4px 0 0; letter-spacing: -.01em; }
+
+  .kpi { padding: 18px; display: flex; flex-direction: column; gap: 10px; min-height: 150px; }
+  .kpi .numero { font-size: clamp(30px, 4vw, 48px); white-space: nowrap; }
+  .kpi .delta { font-size: 12.5px; font-weight: 700; }
+  .delta.sobe { color: var(--verde); }
+  .delta.atencao { color: #c4501a; }
+  .spark { height: 34px; margin-top: auto; }
+
+  /* mapa de calor */
+  .calor { display: grid; grid-template-columns: 38px repeat(16, 1fr); gap: 3px; font-size: 11px; }
+  .calor .rot { color: var(--tinta-3); font-weight: 700; display: flex; align-items: center; }
+  .calor .rot-h { color: var(--tinta-3); font-weight: 700; text-align: center; }
+  .calor .c { aspect-ratio: 1.25; border-radius: 4px; cursor: default; position: relative; }
+  .calor .c.fechado { background: repeating-linear-gradient(135deg, var(--areia-2) 0 3px, transparent 3px 6px); }
+  .calor .c:hover { outline: 2px solid var(--noite); outline-offset: 1px; z-index: 2; }
+  .escala { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--tinta-3); margin-top: 14px; flex-wrap: wrap; }
+  .escala span.cx { width: 18px; height: 12px; border-radius: 3px; display: inline-block; }
+  .chamadas { display: grid; gap: 8px; margin-top: 16px; }
+  @media (min-width: 700px) { .chamadas { grid-template-columns: 1fr 1fr; } }
+  .chamada { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; background: var(--areia); border-radius: 12px; padding: 10px 12px; }
+  .chamada b { display: block; }
+
+  /* quadras agora */
+  .quadras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .q { border-radius: 12px; padding: 10px 8px; min-height: 72px; display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; font-weight: 700; }
+  .q b { font-family: var(--titulo); font-weight: 400; font-size: 20px; }
+  .q.aula { background: var(--azul); color: #fff; }
+  .q.dayuse { background: var(--sol); color: #fff; }
+  .q.reserva { background: var(--noite); color: #fff; }
+  .q.livre { background: transparent; border: 1px dashed var(--areia-3); color: var(--tinta-3); }
+  .legenda { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--tinta-2); margin-top: 12px; }
+  .legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .recepcao { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .recepcao div { background: var(--areia); border-radius: 12px; padding: 12px; }
+  .recepcao .numero { font-size: 28px; display: block; }
+
+  /* dinheiro na mesa */
+  .mesa { padding: 34px 0 40px; margin: 14px auto; border-radius: 28px; width: calc(100% - 32px); }
+  @media (min-width: 900px) { .mesa { width: calc(100% - 64px); } }
+  .mesa .largura { padding: 0 24px; }
+  .ideia { background: rgba(255,255,255,.06); border: 1px solid var(--linha-clara); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .ideia .numero { font-size: 42px; color: #fff; }
+  .ideia p { margin: 0; font-size: 14px; color: rgba(244,241,234,.75); }
+  .ideia .botao { align-self: flex-start; margin-top: auto; }
+
+  /* receita */
+  .pilha { display: flex; height: 22px; gap: 2px; border-radius: 4px; overflow: hidden; margin: 6px 0 18px; }
+  .pilha span { height: 100%; position: relative; cursor: default; }
+  .tabela { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .tabela th { text-align: left; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); padding: 8px 0; border-bottom: 1px solid var(--linha); }
+  .tabela td { padding: 11px 0; border-bottom: 1px solid var(--linha); vertical-align: middle; }
+  .tabela tr:last-child td { border-bottom: 0; }
+  .tabela .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tabela .cx { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+  .pessoa { display: flex; gap: 10px; align-items: center; }
+  .pessoa .avatar { width: 30px; height: 30px; font-size: 11px; border: 0; }
+
+  /* funil */
+  .funil { display: grid; gap: 10px; }
+  .degrau { display: grid; grid-template-columns: 130px 1fr 54px; gap: 12px; align-items: center; font-size: 13.5px; }
+  .degrau .trilho { height: 22px; background: var(--areia); border-radius: 4px; overflow: hidden; }
+  .degrau .trilho span { display: block; height: 100%; background: var(--azul); border-radius: 0 4px 4px 0; }
+  .degrau b { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .dica { position: fixed; pointer-events: none; z-index: 100; background: var(--noite); color: #fff; padding: 8px 10px; border-radius: 10px; font-size: 12.5px; font-weight: 600; opacity: 0; transition: opacity .12s; transform: translate(-50%, calc(-100% - 10px)); white-space: nowrap; }
+  .dica.mostrar { opacity: 1; }
+  .rolar-x { overflow-x: auto; }
+  footer { padding: 30px 0 60px; }
+</style>
+</head>
+<body class="chao-areia">
+<header class="barra chao-noite">
+  <div class="largura">
+    <a class="marca" href="index.html" id="marca"></a>
+    <nav><a class="ativo" href="#">Visão geral</a><a href="professor.html">Agenda</a><a href="#sumindo">Alunos</a><a href="#receita">Financeiro</a></nav>
+    <div class="dir"><span class="chip chip-noite" id="mes">Novembro</span><span class="avatar" style="background:var(--sol)">G</span></div>
+  </div>
+</header>
+
+<main class="largura">
+  <div class="titulo-linha">
+    <div><span class="rotulo">Gestão da arena</span><h1 class="titulo-l">O que está acontecendo <em>no ASA.</em></h1></div>
+    <span class="chip chip-sol">Protótipo · números de exemplo</span>
+  </div>
+
+  <div class="grade g4">
+    <div class="cartao kpi"><span class="rotulo">Ocupação das quadras · semana</span><span class="numero">71%</span><span class="delta sobe">▲ 9 pontos sobre a média de outubro</span><svg class="spark" id="spark-ocup" viewBox="0 0 120 34" preserveAspectRatio="none"></svg></div>
+    <div class="cartao kpi"><span class="rotulo">Recebido no mês</span><span class="numero" id="kpi-receita">R$ 0</span><span class="delta sobe">▲ 12% sobre outubro</span><svg class="spark" id="spark-rec" viewBox="0 0 120 34" preserveAspectRatio="none"></svg></div>
+    <div class="cartao kpi"><span class="rotulo">Alunos ativos</span><span class="numero">214</span><span class="delta sobe">+18 entraram · 9 saíram</span><svg class="spark" id="spark-alunos" viewBox="0 0 120 34" preserveAspectRatio="none"></svg></div>
+    <div class="cartao-noite kpi"><span class="rotulo">Esperando vaga</span><span class="numero">23</span><span class="delta" style="color:#ffb58a">pessoas querem entrar em turma cheia</span><span class="miudo" style="color:rgba(244,241,234,.6);margin-top:auto">Hoje esse pedido se perde no direct.</span></div>
+  </div>
+
+  <div class="grade g21" style="margin-top:14px">
+    <section class="cartao painel">
+      <div class="painel-topo"><div><span class="rotulo">Ocupação por dia e hora · últimas 4 semanas</span><h2>Onde a arena enche e onde sobra quadra</h2></div></div>
+      <div class="rolar-x"><div class="calor" id="calor" style="min-width:560px"></div></div>
+      <div class="escala" id="escala"></div>
+      <div class="chamadas">
+        <div class="chamada"><span>▲</span><span><b>Ter e qui, 19h e 20h: lotado</b>As 12 quadras ocupadas e 14 pessoas na espera dessas turmas.</span></div>
+        <div class="chamada"><span>▼</span><span><b>Seg a qui, 15h às 17h: 3 em cada 10 quadras</b>Cerca de 100 horas de quadra paradas por semana.</span></div>
+      </div>
+    </section>
+    <section class="cartao painel">
+      <div class="painel-topo"><div><span class="rotulo ao-vivo" id="agora-rotulo">Agora</span><h2>As 12 quadras</h2></div></div>
+      <div class="quadras" id="quadras"></div>
+      <div class="legenda"><span><i style="background:var(--azul)"></i>Aula</span><span><i style="background:var(--sol)"></i>Day use</span><span><i style="background:var(--noite)"></i>Quadra alugada</span><span><i style="border:1px dashed var(--areia-3)"></i>Livre</span></div>
+      <div class="recepcao">
+        <div><span class="numero">31</span><span class="miudo">day use pagos hoje pelo app</span></div>
+        <div><span class="numero">0</span><span class="miudo">cobranças na quadra</span></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<section class="mesa chao-noite largura" style="max-width:1256px">
+  <div class="largura" style="padding:0 24px">
+    <span class="rotulo">Dinheiro na mesa</span>
+    <h2 class="titulo-m" style="margin:10px 0 22px;max-width:22ch">Três coisas que o painel mostrou <em>esta semana.</em></h2>
+    <div class="grade g3">
+      <div class="ideia">
+        <span class="rotulo">Lista de espera</span>
+        <span class="numero">+R$ 1.840</span>
+        <p>14 pessoas esperam vaga nas turmas de terça e quinta às 19h. Uma turma nova de intermediário com a Lara, na quadra 9, enche com 8 delas.</p>
+        <button class="botao botao-sol botao-p" onclick="ASA.aviso('Turma criada. As 8 primeiras da espera recebem o convite no WhatsApp.')">Abrir turma e chamar a espera</button>
+      </div>
+      <div class="ideia">
+        <span class="rotulo">Horário vazio</span>
+        <span class="numero">~100 h</span>
+        <p>De segunda a quinta, das 15h às 17h, sobram umas 100 horas de quadra por semana. Day use de fim de tarde a R$ 15 ou turma kids nova ocupa parte disso.</p>
+        <button class="botao botao-linha botao-p" onclick="ASA.aviso('Promoção criada para seg a qui, 15h às 17h.')">Criar day use de fim de tarde</button>
+      </div>
+      <div class="ideia">
+        <span class="rotulo">Alunos sumindo</span>
+        <span class="numero">9 alunos</span>
+        <p>Não vêm há mais de 14 dias e não avisaram. A mensagem sai do número da arena, em nome do professor, antes de a pessoa cancelar.</p>
+        <button class="botao botao-linha botao-p" onclick="ASA.aviso('Mensagem enviada para os 9, cada uma em nome do professor da turma.')">Mandar mensagem para os 9</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="largura">
+  <div class="grade g11">
+    <section class="cartao painel" id="receita">
+      <div class="painel-topo"><div><span class="rotulo">Recebido em novembro</span><h2>De onde vem o dinheiro</h2></div><span class="miudo">Pix e cartão pelo app</span></div>
+      <div class="pilha" id="pilha"></div>
+      <table class="tabela" id="tabela-receita"></table>
+    </section>
+    <section class="cartao painel">
+      <div class="painel-topo"><div><span class="rotulo">Aulas experimentais · novembro</span><h2>Quem vira aluno</h2></div></div>
+      <div class="funil" id="funil"></div>
+      <p class="suave" style="font-size:13.5px;margin:16px 0 0">Quem não marcou a segunda aula recebe uma mensagem 2 dias depois da experimental, com 3 horários do mesmo professor com vaga.</p>
+      <div class="painel-topo" style="margin:24px 0 10px"><div><span class="rotulo">De onde vieram os novos</span></div></div>
+      <table class="tabela" id="origem"></table>
+    </section>
+  </div>
+
+  <div class="grade g11" style="margin-top:14px">
+    <section class="cartao painel" id="sumindo">
+      <div class="painel-topo"><div><span class="rotulo">Alunos em risco</span><h2>Sem aparecer há mais de 14 dias</h2></div><button class="botao botao-azul botao-p" onclick="ASA.aviso('Mensagem enviada para todos da lista.')">Mandar para todos</button></div>
+      <div class="rolar-x"><table class="tabela" id="tabela-sumindo" style="min-width:460px"></table></div>
+    </section>
+    <section class="cartao painel">
+      <div class="painel-topo"><div><span class="rotulo">Professores · novembro</span><h2>Turmas, vagas e presença</h2></div></div>
+      <div class="rolar-x"><table class="tabela" id="tabela-prof" style="min-width:480px"></table></div>
+    </section>
+  </div>
+
+  <section class="cartao painel" style="margin-top:14px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:center">
+    <div><span class="rotulo">Google</span><h2 style="font-family:var(--titulo);font-weight:400;font-size:21px;margin:4px 0 6px">4,7 com 26 avaliações</h2><span class="suave" style="font-size:13.5px">Só uma avaliação nova no último mês. O app pede a avaliação depois da 3ª aula, para quem marcou presença.</span></div>
+    <div><span class="rotulo">Ficha antiga</span><h2 style="font-family:var(--titulo);font-weight:400;font-size:21px;margin:4px 0 6px">Murilo Dantas ainda aparece</h2><span class="suave" style="font-size:13.5px">A ficha do endereço antigo segue ativa no Google, com outro telefone e sem dono. Dá para assumir e apontar para o Central Garden.</span></div>
+    <div><span class="rotulo">Link da bio</span><h2 style="font-family:var(--titulo);font-weight:400;font-size:21px;margin:4px 0 6px">Ainda leva à Farolândia e à Atalaia</h2><span class="suave" style="font-size:13.5px">O site novo vira o link único: aulas, day use, quadras, eventos e torneios.</span></div>
+  </section>
+</main>
+
+<footer><div class="largura"><span class="miudo">ASA Beach Tennis · painel de gestão · protótipo feito pela Turma Cheia. Números de exemplo, exceto as notas do Google (25/11/2026).</span></div></footer>
+
+<div class="dica" id="dica"></div>
+
+<script src="dados.js"></script>
+<script>
+  const $ = (s) => document.querySelector(s);
+  $("#marca").innerHTML = ASA.marca("#fff") + `<span class="marca-sub" style="color:#fff">Gestão</span>`;
+  const hoje = ASA.hoje();
+  $("#mes").textContent = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][hoje.getMonth()] + " " + hoje.getFullYear();
+
+  // dica ao passar o mouse
+  const dica = $("#dica");
+  document.addEventListener("mousemove", (e) => {
+    const alvo = e.target.closest("[data-dica]");
+    if (!alvo) { dica.classList.remove("mostrar"); return; }
+    dica.textContent = alvo.dataset.dica; dica.style.left = e.clientX + "px"; dica.style.top = e.clientY + "px"; dica.classList.add("mostrar");
+  });
+
+  // linhas pequenas
+  function spark(id, valores, cor = "var(--azul)") {
+    const min = Math.min(...valores), max = Math.max(...valores);
+    const pts = valores.map((v, i) => [(i / (valores.length - 1)) * 116 + 2, 30 - ((v - min) / (max - min || 1)) * 26]);
+    const d = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+    const ult = pts[pts.length - 1];
+    $(id).innerHTML = `<path d="${d} L118 34 L2 34 Z" fill="${cor}" opacity=".1"/><path d="${d}" fill="none" stroke="${cor}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/><circle cx="${ult[0]}" cy="${ult[1]}" r="3.5" fill="${cor}" stroke="#fffdf9" stroke-width="2"/>`;
+  }
+  spark("#spark-ocup", [58, 61, 60, 63, 62, 66, 64, 68, 71]);
+  spark("#spark-rec", [49, 52, 55, 54, 58, 61, 60, 64, 68]);
+  spark("#spark-alunos", [188, 191, 193, 196, 199, 203, 205, 209, 214]);
+
+  // mapa de calor
+  const RAMPA = ["#e6eefc", "#c3d4f7", "#8fb0f0", "#5585e6", "#1f56cf", "#0a2f8a"];
+  const cor = (v) => RAMPA[Math.min(5, Math.floor(v / 17))];
+  const dias = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+  const horas = [...Array(16)].map((_, i) => i + 6);
+  const aberto = (d, h) => d <= 4 ? (h < 11 || h >= 15) : d === 5 ? ((h >= 7 && h < 11) || h >= 16) : (h >= 16 && h < 20);
+  const r = ASA.semente(2026);
+  let html = `<span></span>` + horas.map((h) => `<span class="rot-h">${h}</span>`).join("");
+  dias.forEach((dia, d) => {
+    html += `<span class="rot">${dia}</span>`;
+    horas.forEach((h) => {
+      if (!aberto(d, h)) { html += `<span class="c fechado" data-dica="${dia} ${h}h · fechado"></span>`; return; }
+      let v;
+      if (d <= 4) v = h >= 19 && h <= 20 ? ((d === 1 || d === 3) ? 100 : 88 + r() * 10) : h >= 17 ? 62 + r() * 25 : h >= 15 ? 22 + r() * 16 : h <= 7 ? 45 + r() * 20 : 28 + r() * 22;
+      else if (d === 5) v = h <= 10 ? 70 + r() * 25 : 45 + r() * 30;
+      else v = 55 + r() * 30;
+      v = Math.round(Math.min(100, v));
+      const quadras = Math.round((v / 100) * 12);
+      html += `<span class="c" style="background:${cor(v)}" data-dica="${dia} ${h}h · ${v}% · ${quadras} de 12 quadras"></span>`;
+    });
+  });
+  $("#calor").innerHTML = html;
+  $("#escala").innerHTML = `<span>vazia</span>` + RAMPA.map((c) => `<span class="cx" style="background:${c}"></span>`).join("") + `<span>lotada</span><span class="cx" style="margin-left:14px;background:repeating-linear-gradient(135deg,var(--areia-3) 0 3px,transparent 3px 6px)"></span><span>fechada</span>`;
+
+  // quadras agora
+  const h = ASA.horaAgora();
+  $("#agora-rotulo").textContent = `Agora · ${ASA.dataCurta(hoje)}, ${h}h`;
+  const tipos = ["aula", "aula", "aula", "dayuse", "dayuse", "reserva", "aula", "livre", "reserva", "aula", "dayuse", "livre"];
+  const nomesTipo = { aula: (i) => ["Higor · Inic.", "Lara · Inter.", "Raphael · Avanç.", "Igor · Avanç.", "Monica · Inter."][i % 5], dayuse: () => "Day use", reserva: () => "Alugada", livre: () => "Livre" };
+  $("#quadras").innerHTML = tipos.map((t, i) => `<div class="q ${t}" data-dica="Quadra ${i + 1} · ${nomesTipo[t](i)}"><b>${i + 1}</b><span>${nomesTipo[t](i)}</span></div>`).join("");
+
+  // receita
+  const receita = [
+    { nome: "Mensalidades das aulas", v: 41300, cor: "#0b4ac5" },
+    { nome: "Day use", v: 9850, cor: "#ff7a2f" },
+    { nome: "Aluguel de quadra", v: 8640, cor: "#12805a" },
+    { nome: "Aniversários e empresas", v: 5400, cor: "#8b3fb8" },
+    { nome: "Inscrições de torneio", v: 3230, cor: "#c18a1b" },
+  ];
+  const total = receita.reduce((a, x) => a + x.v, 0);
+  $("#kpi-receita").textContent = ASA.reais(total).replace(/\s/g, " ");
+  $("#pilha").innerHTML = receita.map((x) => `<span style="flex:${x.v};background:${x.cor}" data-dica="${x.nome} · ${ASA.reais(x.v)} · ${Math.round((x.v / total) * 100)}%"></span>`).join("");
+  $("#tabela-receita").innerHTML = `<tr><th>Tipo</th><th class="num">Valor</th><th class="num">Parte</th></tr>` + receita.map((x) => `<tr><td><span class="cx" style="background:${x.cor}"></span>${x.nome}</td><td class="num">${ASA.reais(x.v)}</td><td class="num">${Math.round((x.v / total) * 100)}%</td></tr>`).join("") + `<tr><td><b>Total</b></td><td class="num"><b>${ASA.reais(total)}</b></td><td></td></tr>`;
+
+  // funil
+  const funil = [["Pediram experimental", 41], ["Fizeram a aula", 33], ["Marcaram a 2ª aula", 22], ["Viraram alunos", 16]];
+  $("#funil").innerHTML = funil.map(([n, v]) => `<div class="degrau"><span>${n}</span><span class="trilho"><span style="width:${(v / 41) * 100}%" data-dica="${n}: ${v}"></span></span><b>${v}</b></div>`).join("") + `<div class="degrau"><span class="miudo">Conversão</span><span></span><b style="color:var(--azul)">${Math.round((16 / 33) * 100)}%</b></div>`;
+  const origem = [["Instagram", 7], ["Indicação de aluno", 5], ["Google", 3], ["Passou na frente", 1]];
+  $("#origem").innerHTML = origem.map(([n, v]) => `<tr><td>${n}</td><td class="num">${v} ${v > 1 ? "alunos" : "aluno"}</td></tr>`).join("");
+
+  // sumindo
+  const sumidos = [["Bruno", "Higor", "Ter/Qui 19h", 15], ["Fernanda", "Lara", "Seg/Qua 18h", 17], ["Otávio", "Raphael", "Ter/Qui 20h", 19], ["Priscila", "Monica", "Seg/Qua 9h", 21], ["Samuel", "Igor", "Seg/Qua 20h", 22], ["Tainá", "Lara", "Ter/Qui 18h", 24]];
+  $("#tabela-sumindo").innerHTML = `<tr><th>Aluno</th><th>Turma</th><th class="num">Sem vir</th><th></th></tr>` + sumidos.map(([n, p, t, d]) => `<tr><td><span class="pessoa">${ASA.avatar(n)}<b>${n}</b></span></td><td><span class="miudo" style="color:var(--tinta-2)">${t} · ${p}</span></td><td class="num">${d} dias</td><td class="num"><button class="botao botao-linha botao-p" onclick="ASA.aviso('Mensagem enviada para ${n} em nome ${p === "Lara" || p === "Monica" ? "da" : "do"} ${p}.')">Mandar oi</button></td></tr>`).join("");
+
+  // professores
+  const profs = ASA.professores.map((p, i) => {
+    const turmas = [0, 1, 2, 3, 4].reduce((a, k) => a + ASA.turmasDoDia(ASA.somaDias(hoje, k)).filter((t) => t.prof.id === p.id).length, 0);
+    const rr = ASA.semente(i * 7919 + 101); rr();
+    return { p, turmas: turmas || 4, alunos: Math.round(18 + rr() * 26), ocup: Math.round(62 + rr() * 34), espera: Math.round(rr() * 6), presenca: Math.round(78 + rr() * 16) };
+  });
+  $("#tabela-prof").innerHTML = `<tr><th>Professor</th><th class="num">Turmas/sem.</th><th class="num">Alunos</th><th class="num">Ocupação</th><th class="num">Espera</th><th class="num">Presença</th></tr>` + profs.map((x) => `<tr><td><span class="pessoa">${ASA.avatar(x.p.nome.replace(/“.*”/, ""), x.p.cor)}<b>${x.p.curto}</b></span></td><td class="num">${x.turmas}</td><td class="num">${x.alunos}</td><td class="num">${x.ocup}%</td><td class="num">${x.espera}</td><td class="num">${x.presenca}%</td></tr>`).join("");
+</script>
+</body>
+</html>

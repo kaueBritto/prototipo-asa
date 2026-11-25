@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Professor · ASA Beach Tennis</title>
+<meta name="theme-color" content="#061640">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="asa.css">
+<link rel="stylesheet" href="casca.css">
+<style>
+  body.chao-areia { min-height: 100vh; }
+  .tela { --n-abas: 4; }
+  .resumo { padding: 18px; }
+  .resumo-grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 16px; }
+  .resumo-grade div { background: rgba(255,255,255,.07); border-radius: 12px; padding: 10px 8px; }
+  .resumo-grade b { font-family: var(--titulo); font-weight: 400; font-size: 22px; display: block; line-height: 1; }
+  .resumo-grade span { font-size: 10.5px; color: rgba(244,241,234,.62); line-height: 1.2; display: block; margin-top: 6px; }
+  .proxima { padding: 16px; }
+  .proxima h3 { font-family: var(--titulo); font-weight: 400; font-size: 26px; margin: 6px 0 2px; line-height: 1.1; }
+  .pendencia { padding: 14px; }
+  .pendencia .acoes { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .turma-linha { cursor: pointer; }
+
+  .aluno-linha { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--linha); }
+  .aluno-linha:last-child { border-bottom: 0; }
+  .aluno-linha b { font-size: 14px; display: block; }
+  .presenca { width: 40px; height: 26px; border-radius: 99px; background: var(--areia-2); position: relative; transition: background .2s; }
+  .presenca::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .presenca.on { background: var(--verde); }
+  .presenca.on::after { transform: translateX(14px); }
+
+  /* conversa */
+  .conversa { border-radius: 22px; overflow: hidden; border: 1px solid var(--linha); box-shadow: var(--sombra); }
+  .conversa-topo { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #0e3d36; color: #fff; }
+  .conversa-topo .foto { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--azul); flex: none; }
+  .conversa-topo .foto svg { width: 24px; height: auto; }
+  .conversa-topo b { display: block; font-size: 14.5px; }
+  .conversa-topo small { font-size: 11.5px; opacity: .75; }
+  .conversa-corpo { background: #ece5dd; padding: 14px 10px 16px; display: flex; flex-direction: column; gap: 6px; background-image: radial-gradient(rgba(0,0,0,.035) 1px, transparent 1px); background-size: 14px 14px; }
+  .dia-sep { align-self: center; font-size: 11px; font-weight: 700; background: #fff; color: #54656f; border-radius: 8px; padding: 4px 10px; margin: 4px 0; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+  .balao { max-width: 86%; padding: 8px 10px 6px; border-radius: 10px; font-size: 13.5px; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,.1); position: relative; white-space: pre-line; color: #111b21; }
+  .balao .h { display: block; text-align: right; font-size: 10.5px; color: #667781; margin-top: 2px; }
+  .balao .autor { display: block; font-size: 12px; font-weight: 800; margin-bottom: 2px; }
+  .recebido { align-self: flex-start; background: #fff; border-top-left-radius: 2px; }
+  .enviado { align-self: flex-end; background: #d9fdd3; border-top-right-radius: 2px; }
+  .botoes-wa { display: grid; gap: 1px; margin: 6px -10px -6px; border-top: 1px solid #e9edef; }
+  .botoes-wa button { padding: 9px; color: #027eb5; font-weight: 700; font-size: 13.5px; background: #fff; }
+  .botoes-wa button:last-child { border-radius: 0 0 10px 10px; }
+  .explica { font-size: 13px; color: var(--tinta-2); margin: 12px 4px 0; }
+  .seg3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: rgba(255,255,255,.6); border: 1px solid var(--linha); border-radius: 16px; padding: 4px; margin-bottom: 14px; }
+  .seg3 button { height: 40px; border-radius: 12px; font-size: 12.5px; font-weight: 800; color: var(--tinta-2); }
+  .seg3 button.ativo { background: var(--noite); color: #fff; }
+
+  .semana-dia { margin-top: 18px; }
+  .semana-dia:first-child { margin-top: 0; }
+</style>
+</head>
+<body class="chao-areia">
+<div class="palco">
+  <div class="palco-texto">
+    <a class="marca" href="index.html" id="marca-palco" style="color:var(--azul)"></a>
+    <span class="rotulo" style="display:block;margin-top:34px">Painel do professor</span>
+    <h1 class="titulo-l">O grupo continua. <em>A parte chata sai.</em></h1>
+    <p class="suave" style="font-size:16px;margin:0">O professor não precisa trocar o WhatsApp por nada. Quem pergunta “quem vai?”, conta as vagas, chama a lista de espera e lembra do pagamento é o número da arena.</p>
+    <ul class="palco-lista">
+      <li><span class="n">1</span><span><b>O aluno responde num toque</b><span class="suave">Chega uma mensagem do número da ASA com “Vou” e “Não vou”. Sem app para baixar.</span></span></li>
+      <li><span class="n">2</span><span><b>A vaga não fica vazia</b><span class="suave">Quem avisa a falta libera a vaga, e a primeira da lista de espera é chamada sozinha.</span></span></li>
+      <li><span class="n">3</span><span><b>A lista chega pronta</b><span class="suave">Às 17h o professor recebe a lista do dia no WhatsApp e cola no grupo, se quiser.</span></span></li>
+    </ul>
+    <div class="palco-nav">
+      <a class="botao botao-linha botao-p" href="index.html">← Apresentação</a>
+      <a class="botao botao-linha botao-p" href="site.html">Site</a>
+      <a class="botao botao-linha botao-p" href="app.html">App do jogador</a>
+      <a class="botao botao-linha botao-p" href="gestao.html">Gestão</a>
+    </div>
+  </div>
+
+  <div class="celular">
+    <div class="tela chao-areia" id="tela">
+      <div class="status"><span>9:41</span><i>●●●● ᯤ ▮</i></div>
+      <div class="tela-rolagem" id="rolagem">
+        <div class="conteudo">
+
+          <!-- HOJE -->
+          <div class="vista ativa" data-vista="hoje">
+            <div class="cab">
+              <div><span class="rotulo" id="data-hoje">Hoje</span><h1 id="ola">Boa tarde, Higor</h1></div>
+              <button class="sino" aria-label="Avisos" onclick="irPara('whats')">🔔</button>
+            </div>
+            <div class="cartao-noite resumo">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="rotulo" id="resumo-rotulo">Seu dia</span><span class="chip chip-noite" id="n-turmas">4 turmas</span></div>
+              <div class="resumo-grade">
+                <div><b id="r-conf">0</b><span>alunos confirmados</span></div>
+                <div><b id="r-falta">2</b><span>faltas avisadas</span></div>
+                <div><b id="r-espera">0</b><span>na lista de espera</span></div>
+                <div><b>1</b><span>experimental</span></div>
+              </div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Próxima aula</span></div>
+              <div id="proxima"></div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Precisa de você</span></div>
+              <div class="lista" id="pendencias">
+                <div class="cartao pendencia" id="pend-exp">
+                  <div style="display:flex;justify-content:space-between;gap:10px"><b>Rafael quer uma aula experimental</b><span class="chip chip-sol">Novo</span></div>
+                  <span class="miudo">Iniciante · pediu pelo site · sugestão: quinta 17h (3 vagas)</span>
+                  <div class="acoes"><button class="botao botao-azul botao-p" onclick="resolver('pend-exp','Rafael está na quinta 17h. Ele recebe o endereço e o que levar.')">Aceitar quinta 17h</button><button class="botao botao-linha botao-p" onclick="ASA.aviso('Mandamos outros 3 horários com vaga para ele escolher.')">Outro horário</button></div>
+                </div>
+                <div class="cartao pendencia" id="pend-sumido">
+                  <div style="display:flex;justify-content:space-between;gap:10px"><b>Bruno não vem há 15 dias</b><span class="chip chip-areia">Sumindo</span></div>
+                  <span class="miudo">Faltou 4 aulas seguidas sem avisar. Mensalidade em dia.</span>
+                  <div class="acoes"><button class="botao botao-azul botao-p" onclick="resolver('pend-sumido','Mensagem enviada pelo número da arena, assinada por você.')">Mandar um oi</button><button class="botao botao-linha botao-p" onclick="resolver('pend-sumido','Ok, lembramos de novo em 7 dias.')">Depois</button></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Turmas de hoje</span><button onclick="irPara('agenda')">Semana</button></div>
+              <div class="lista" id="turmas-hoje"></div>
+            </div>
+          </div>
+
+          <!-- WHATSAPP -->
+          <div class="vista" data-vista="whats">
+            <div class="cab"><div><span class="rotulo">WhatsApp</span><h1>Do jeito que já é</h1></div></div>
+            <div class="seg3" id="seg-wa">
+              <button data-c="aluno" class="ativo">Aluno</button><button data-c="prof">Você</button><button data-c="grupo">Seu grupo</button>
+            </div>
+            <div id="chat"></div>
+            <p class="explica" id="chat-explica"></p>
+          </div>
+
+          <!-- ALUNOS -->
+          <div class="vista" data-vista="alunos">
+            <div class="cab"><div><span class="rotulo">Seus alunos</span><h1 id="t-alunos">—</h1></div></div>
+            <div class="chips" id="filtros" style="margin-top:0">
+              <button class="ativo" data-f="todos">Todos</button><button data-f="sumindo">Sumindo</button><button data-f="exp">Experimentais</button><button data-f="pag">Mensalidade</button>
+            </div>
+            <div class="cartao" style="padding:4px 14px;margin-top:14px" id="lista-alunos"></div>
+          </div>
+
+          <!-- AGENDA -->
+          <div class="vista" data-vista="agenda">
+            <div class="cab"><div><span class="rotulo">Sua semana</span><h1>Turmas e vagas</h1></div></div>
+            <div id="semana"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <nav class="abas" id="abas">
+        <button data-ir="hoje" class="ativa"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Hoje</button>
+        <button data-ir="whats"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>WhatsApp<span class="bolinha">3</span></button>
+        <button data-ir="alunos"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.5-5 6.5-5s5.5 1.5 6.5 5M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2 .6 3.2 2.2 3.8 5"/></svg>Alunos</button>
+        <button data-ir="agenda"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Semana</button>
+      </nav>
+
+      <div class="folha-fundo" onclick="fecharFolha()"></div>
+      <div class="folha" id="folha"></div>
+    </div>
+  </div>
+</div>
+<a class="selo-exemplo" href="index.html">Protótipo · <b>dados de exemplo</b></a>
+
+<script src="dados.js"></script>
+<script>
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  $("#marca-palco").innerHTML = ASA.marca("var(--azul)") + `<span class="marca-sub">Arena Schuster<br>Aracaju</span>`;
+  $("#ola").textContent = `${ASA.saudacao()}, Higor`;
+
+  // dia de referência: hoje, ou o próximo dia útil se for fim de semana
+  let base = ASA.hoje();
+  while (base.getDay() === 0 || base.getDay() === 6) base = ASA.somaDias(base, 1);
+  const ehHoje = base.getTime() === ASA.hoje().getTime();
+  $("#data-hoje").textContent = (ehHoje ? "Hoje · " : "Próximo dia de aula · ") + ASA.dataCurta(base);
+
+  function irPara(v) {
+    $$(".vista").forEach((x) => x.classList.toggle("ativa", x.dataset.vista === v));
+    $$("#abas button").forEach((b) => b.classList.toggle("ativa", b.dataset.ir === v));
+    $("#rolagem").scrollTop = 0;
+  }
+  $("#abas").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) irPara(b.dataset.ir); });
+
+  // ---------- turmas do Higor ----------
+  const doHigor = (d) => ASA.turmasDoDia(d).filter((t) => t.prof.id === "higor");
+  const turmas = doHigor(base).map((t, i) => montarTurma(t, i));
+  function montarTurma(t, i) {
+    // a turma das 19h é a que sempre lota: fica cheia e com fila, como na arena
+    if (t.hora === "19:00") t = { ...t, confirmados: t.vagas, espera: 2 };
+    const r = ASA.semente(+t.hora.slice(0, 2) * 13 + i + base.getDate());
+    const pool = ASA.jogadores.filter((j) => (t.nivel === 1 ? j.nivel <= 2 : j.nivel >= 1));
+    const ini = Math.floor(r() * 20);
+    const nomes = pool.slice(ini, ini + t.vagas + 4).map((j) => j.nome);
+    const faltas = Math.min(i === 1 || i === 3 ? 1 : 0, t.vagas - t.confirmados);
+    const alunos = nomes.slice(0, t.vagas).map((n, k) => ({ nome: n, status: k < t.confirmados ? "vou" : k < t.confirmados + faltas ? "nao" : "sem", presente: false }));
+    const espera = t.espera ? nomes.slice(t.vagas, t.vagas + t.espera) : [];
+    return { ...t, alunos, espera, faltas };
+  }
+  const tot = (f) => turmas.reduce((a, t) => a + f(t), 0);
+  $("#n-turmas").textContent = `${turmas.length} turmas`;
+  $("#r-conf").textContent = tot((t) => t.alunos.filter((a) => a.status === "vou").length);
+  $("#r-falta").textContent = tot((t) => t.faltas);
+  $("#r-espera").textContent = tot((t) => t.espera.length);
+
+  function linhaTurma(t, i) {
+    const conf = t.alunos.filter((a) => a.status === "vou").length;
+    const livres = t.vagas - conf;
+    return `<div class="cartao linha-cartao turma-linha" onclick="abrirTurma(${i})">
+      <span class="hora-g">${+t.hora.slice(0, 2)}h<small>Q${t.quadra}</small></span>
+      <span><b>${t.nomeNivel}</b><span class="miudo">${conf} de ${t.vagas} confirmados${t.espera.length ? ` · ${t.espera.length} na espera` : ""}</span><div class="ocupacao ${livres ? "" : "cheia"}" style="margin-top:8px"><span style="width:${(conf / t.vagas) * 100}%"></span></div></span>
+      <span class="chip ${livres ? "chip-verde" : "chip-sol"}">${livres ? livres + (livres > 1 ? " vagas" : " vaga") : "Cheia"}</span>
+    </div>`;
+  }
+  function desenharHoje() {
+    $("#turmas-hoje").innerHTML = turmas.map(linhaTurma).join("");
+    const agora = new Date().getHours();
+    const prox = turmas.find((t) => !ehHoje || +t.hora.slice(0, 2) >= agora) || turmas[turmas.length - 1];
+    const i = turmas.indexOf(prox);
+    const conf = prox.alunos.filter((a) => a.status === "vou");
+    const sem = prox.alunos.filter((a) => a.status === "sem").length;
+    $("#proxima").innerHTML = `<div class="cartao proxima">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><span class="rotulo">${ehHoje ? "Hoje" : ASA.dataCurta(base)} · ${+prox.hora.slice(0, 2)}h · quadra ${prox.quadra}</span><h3>${prox.nomeNivel}</h3><span class="miudo">${conf.length} vão${sem ? ` · ${sem} sem resposta (o lembrete sai às ${+prox.hora.slice(0, 2) - 2}h)` : ""}</span></div><span class="chip">${conf.length}/${prox.vagas}</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">${ASA.avatares(conf.map((a) => a.nome), 6)}<button class="botao botao-azul botao-p" onclick="abrirTurma(${i})">Abrir lista</button></div>
+    </div>`;
+  }
+  desenharHoje();
+
+  function resolver(id, msg) { const el = document.getElementById(id); el.style.transition = ".3s"; el.style.opacity = 0; setTimeout(() => el.remove(), 300); ASA.aviso(msg); }
+
+  // ---------- folha da turma ----------
+  let turmaAberta = 0;
+  function abrirTurma(i) {
+    turmaAberta = i;
+    const t = turmas[i];
+    const status = { vou: `<span class="chip chip-verde">Vou</span>`, nao: `<span class="chip chip-areia">Não vou</span>`, sem: `<span class="chip chip-sol">Sem resposta</span>` };
+    const conf = t.alunos.filter((a) => a.status === "vou").length;
+    $("#folha").innerHTML = `<div class="puxador"></div>
+      <span class="rotulo">${ehHoje ? "Hoje" : ASA.dataCurta(base)} · ${+t.hora.slice(0, 2)}h · quadra ${t.quadra}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0 4px"><h3 class="titulo-s" style="margin:0">${t.nomeNivel}</h3><span class="chip">${conf}/${t.vagas}</span></div>
+      <span class="miudo">Depois da aula, marque quem veio. Isso alimenta a frequência e o aviso de quem está sumindo.</span>
+      <div class="cartao" style="padding:2px 14px;margin-top:14px">
+        ${t.alunos.map((a, k) => `<div class="aluno-linha">${ASA.avatar(a.nome)}<span><b>${a.nome}</b>${status[a.status]}</span>${a.status === "nao" ? `<span class="miudo">avisou</span>` : `<button class="presenca ${a.presente ? "on" : ""}" data-k="${k}" aria-label="Presença"></button>`}</div>`).join("")}
+      </div>
+      ${t.espera.length ? `<div class="secao" style="margin-top:18px"><div class="secao-topo"><span class="rotulo">Lista de espera</span></div>
+        <div class="cartao" style="padding:2px 14px">${t.espera.map((n, k) => `<div class="aluno-linha">${ASA.avatar(n)}<span><b>${n}</b><span class="miudo">${k === 0 ? "Será chamada se alguém avisar falta" : "Próxima da fila"}</span></span><span class="miudo">${k + 1}ª</span></div>`).join("")}</div></div>` : ""}
+      ${t.faltas ? `<div class="nota" style="margin-top:14px"><span>↺</span><span>${t.alunos.find((a) => a.status === "nao").nome} avisou a falta pelo WhatsApp às 14h12. ${t.espera.length ? "A vaga foi oferecida para a primeira da espera." : "A vaga ficou aberta para reposição e experimental."}</span></div>` : ""}
+      <div class="campo" style="margin-top:18px"><label>Avisar a turma (sai do número da arena)</label><textarea rows="2" id="aviso-turma">Hoje vamos treinar saque e devolução. Cheguem 10 min antes.</textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+        <button class="botao botao-linha" onclick="ASA.aviso('Lista copiada. É só colar no grupo.')">Copiar lista</button>
+        <button class="botao botao-sol" onclick="fecharFolha();ASA.aviso('Aviso enviado para os ${conf} alunos.')">Enviar aviso</button>
+      </div>`;
+    $("#tela").classList.add("folha-aberta");
+  }
+  function fecharFolha() { $("#tela").classList.remove("folha-aberta"); }
+  $("#folha").addEventListener("click", (e) => {
+    const b = e.target.closest(".presenca"); if (!b) return;
+    const a = turmas[turmaAberta].alunos[+b.dataset.k];
+    a.presente = !a.presente; b.classList.toggle("on", a.presente);
+  });
+
+  // ---------- conversas ----------
+  const t19 = turmas.find((t) => t.hora === "19:00") || turmas[0];
+  const lista19 = t19.alunos.filter((a) => a.status === "vou").map((a) => a.nome);
+  const hora = (h) => `<span class="h">${h}</span>`;
+  const conversas = {
+    aluno: {
+      nome: "ASA Beach Tennis", sub: "conta comercial",
+      explica: "O aluno não instala nada. A mensagem sai do número da arena, com botões. A resposta dele já entra na lista do professor e da recepção.",
+      msgs: `
+        <span class="dia-sep">ONTEM</span>
+        <div class="balao recebido">Oi, Gabriela! Sua aula de amanhã: <b>Intermediário com o Higor, 19h, quadra 4</b>. Você vai?${hora("12:00")}
+          <div class="botoes-wa"><button>Vou</button><button>Não vou</button></div></div>
+        <div class="balao enviado">Vou${hora("12:41")}</div>
+        <div class="balao recebido">Fechado! Até amanhã às 19h. A turma está com 7 de 8 confirmados 🎾${hora("12:41")}</div>
+        <span class="dia-sep">HOJE</span>
+        <div class="balao recebido">Gabriela, abriu uma vaga na turma de <b>segunda 20h (Avançado, com o Igor)</b> que você pediu. Quer ficar com ela? A vaga fica guardada até 20h30.${hora("14:12")}
+          <div class="botoes-wa"><button>Quero a vaga</button><button>Agora não</button></div></div>`,
+    },
+    prof: {
+      nome: "ASA Beach Tennis", sub: "para o professor",
+      explica: "O professor recebe o resumo pronto. Ele só decide o que é dele: aceitar a experimental, falar com quem sumiu.",
+      msgs: `
+        <span class="dia-sep">HOJE</span>
+        <div class="balao recebido"><b>Suas turmas de hoje</b>
+${turmas.map((t) => { const c = t.alunos.filter((a) => a.status === "vou").length; return `${+t.hora.slice(0, 2)}h ${t.nomeNivel} · ${c}/${t.vagas}${c >= t.vagas ? " ✅" : ""}${t.espera.length ? ` · ${t.espera.length} na espera` : ""}`; }).join("\n")}
+
+Faltas avisadas: ${turmas.filter((t) => t.faltas).map((t) => `${t.alunos.find((a) => a.status === "nao").nome} (${+t.hora.slice(0, 2)}h)`).join(" e ") || "nenhuma"}. As vagas ficaram abertas para reposição e experimental.${hora("17:00")}
+          <div class="botoes-wa"><button>Copiar lista para o grupo</button></div></div>
+        <div class="balao recebido">Experimental: <b>Rafael</b> quer começar no iniciante. Quinta 17h tem 3 vagas.${hora("17:02")}
+          <div class="botoes-wa"><button>Aceitar quinta 17h</button><button>Sugerir outro horário</button></div></div>
+        <div class="balao enviado">Aceitar quinta 17h${hora("17:10")}</div>
+        <div class="balao recebido">Pronto. O Rafael recebeu o endereço, o horário e o que levar.${hora("17:10")}</div>`,
+    },
+    grupo: {
+      nome: "Turma Ter e Qui 19h 🎾", sub: "Higor, Ana Clara, Bruno, Camila e mais 6",
+      explica: "O grupo continua sendo da turma: resenha, foto e vídeo do treino. Só a lista deixa de ser feita na mão.",
+      msgs: `
+        <span class="dia-sep">HOJE</span>
+        <div class="balao enviado"><span class="autor" style="color:#0b4ac5">Higor</span>Lista de hoje, 19h ✅
+${lista19.join(", ")}
+
+Bora que hoje é saque e devolução 💪${hora("17:12")}</div>
+        <div class="balao recebido"><span class="autor" style="color:#e2672a">Camila</span>Partiu!! 🔥${hora("17:15")}</div>
+        <div class="balao recebido"><span class="autor" style="color:#12805a">Diego</span>Levo as bolinhas novas${hora("17:18")}</div>
+        <div class="balao recebido"><span class="autor" style="color:#8b3fb8">Eduarda</span>Depois tem Verano? 🍻${hora("17:20")}</div>`,
+    },
+  };
+  function mostrarConversa(c) {
+    const x = conversas[c];
+    $$("#seg-wa button").forEach((b) => b.classList.toggle("ativo", b.dataset.c === c));
+    $("#chat").innerHTML = `<div class="conversa"><div class="conversa-topo"><span class="foto">${c === "grupo" ? "🎾" : ASA.marca("#fff")}</span><span><b>${x.nome}</b><small>${x.sub}</small></span></div><div class="conversa-corpo">${x.msgs}</div></div>`;
+    $("#chat-explica").textContent = x.explica;
+  }
+  $("#seg-wa").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) mostrarConversa(b.dataset.c); });
+  $("#chat").addEventListener("click", (e) => { if (e.target.closest(".botoes-wa button")) ASA.aviso("No sistema de verdade esse botão responde na hora."); });
+  mostrarConversa("aluno");
+
+  // ---------- alunos ----------
+  const meus = ASA.jogadores.slice(0, 22).map((j, i) => {
+    const r = ASA.semente(i * 7 + 3);
+    const freq = Math.round(2 + r() * 6);
+    const tipo = i === 4 || i === 11 ? "sumindo" : i === 7 ? "exp" : i === 2 || i === 15 ? "pag" : "ok";
+    return { ...j, freq: tipo === "sumindo" ? Math.min(freq, 1) : freq, tipo, turma: i % 3 === 0 ? "Ter/Qui 19h" : i % 3 === 1 ? "Seg/Qua 20h" : "Ter/Qui 18h" };
+  });
+  $("#t-alunos").textContent = `${meus.length} alunos`;
+  const selo = { ok: `<span class="chip chip-verde">Em dia</span>`, sumindo: `<span class="chip chip-areia">Sumindo</span>`, exp: `<span class="chip">Experimental</span>`, pag: `<span class="chip chip-sol">Vence amanhã</span>` };
+  function desenharAlunos(f = "todos") {
+    const lista = meus.filter((a) => f === "todos" || a.tipo === f);
+    $("#lista-alunos").innerHTML = lista.map((a) => `<div class="aluno-linha">${ASA.avatar(a.nome)}<span><b>${a.nome}</b><span class="miudo">${a.turma} · ${a.tipo === "exp" ? "experimental na quinta" : `${a.freq} de 8 aulas no mês`}</span></span>${selo[a.tipo]}</div>`).join("") || `<div class="vazio">Ninguém aqui agora.</div>`;
+  }
+  $("#filtros").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; $$("#filtros button").forEach((x) => x.classList.toggle("ativo", x === b)); desenharAlunos(b.dataset.f); });
+  desenharAlunos();
+
+  // ---------- semana ----------
+  const dias = [];
+  for (let d = new Date(base); dias.length < 5; d = ASA.somaDias(d, 1)) if (d.getDay() > 0 && d.getDay() < 6) dias.push(new Date(d));
+  $("#semana").innerHTML = dias.map((d) => {
+    const ts = doHigor(d);
+    return `<div class="semana-dia"><div class="secao-topo"><span class="rotulo">${ASA.dataCurta(d)}</span><span class="miudo">${ts.reduce((a, t) => a + t.vagas - t.confirmados, 0)} vagas abertas</span></div>
+      <div class="lista">${ts.map((t) => { const l = t.vagas - t.confirmados; return `<div class="cartao linha-cartao"><span class="hora-g">${+t.hora.slice(0, 2)}h<small>Q${t.quadra}</small></span><span><b>${t.nomeNivel}</b><div class="ocupacao ${l ? "" : "cheia"}" style="margin-top:8px"><span style="width:${(t.confirmados / t.vagas) * 100}%"></span></div></span><span class="chip ${l ? "chip-verde" : "chip-sol"}">${l ? l + " livres" : t.espera + " na espera"}</span></div>`; }).join("")}</div></div>`;
+  }).join("");
+</script>
+</body>
+</html>

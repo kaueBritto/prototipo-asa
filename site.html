@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASA Beach Tennis · Arena Schuster Aracaju</title>
+<meta name="theme-color" content="#061640">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="asa.css">
+<style>
+  body { background: var(--areia); }
+  .largura { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 72px 0; }
+  @media (min-width: 900px) { section { padding: 110px 0; } .largura { padding: 0 40px; } }
+
+  /* topo */
+  .topo { position: fixed; inset: 0 0 auto; z-index: 60; transition: background 0.25s, box-shadow 0.25s; color: #fff; }
+  .topo .largura { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .topo.solido { background: rgba(6, 22, 64, 0.92); backdrop-filter: blur(10px); box-shadow: 0 1px 0 rgba(255,255,255,.06); }
+  .menu { display: none; gap: 28px; font-size: 14px; font-weight: 600; }
+  .menu a { text-decoration: none; opacity: 0.85; }
+  .menu a:hover { opacity: 1; }
+  @media (min-width: 980px) { .menu { display: flex; } }
+  .topo .botao { height: 40px; padding: 0 18px; font-size: 14px; }
+
+  /* capa */
+  .capa { position: relative; min-height: 100svh; display: flex; align-items: flex-end; color: #fff; overflow: hidden; background: var(--noite); }
+  .capa-foto { position: absolute; inset: 0; background: url(img/arena.jpg) center 30% / cover no-repeat; filter: saturate(0.85) contrast(1.05); transform: scale(1.04); }
+  .capa-foto::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(6,22,64,.55) 0%, rgba(6,22,64,.15) 30%, rgba(6,22,64,.55) 58%, rgba(6,22,64,.96) 100%),
+                linear-gradient(90deg, rgba(11,74,197,.35), rgba(11,74,197,0) 60%); mix-blend-mode: normal; }
+  .capa-foto::before { content: ""; position: absolute; inset: 0; background: var(--azul); mix-blend-mode: color; opacity: .28; z-index: 1; }
+  .capa .largura { position: relative; z-index: 2; padding-top: 120px; padding-bottom: 36px; width: 100%; }
+  .capa .titulo-xl { max-width: 11ch; margin: 16px 0 18px; }
+  .capa .titulo-xl em { color: #ffb58a; }
+  .capa p.lead { max-width: 34ch; font-size: 17px; color: rgba(255,255,255,.82); margin: 0 0 26px; }
+  .capa .acoes { display: flex; gap: 10px; flex-wrap: wrap; }
+  .capa-grade { display: grid; gap: 28px; align-items: end; }
+  @media (min-width: 980px) { .capa-grade { grid-template-columns: 1.1fr 0.9fr; gap: 60px; } .capa .largura { padding-bottom: 64px; } }
+
+  /* hoje no ASA */
+  .hoje { padding: 22px; color: var(--tinta); }
+  .hoje-topo { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .hoje h3 { font-family: var(--titulo); font-weight: 300; font-size: 30px; line-height: 1.05; margin: 14px 0 6px; letter-spacing: -.02em; }
+  .hoje h3 b { font-weight: 500; color: var(--azul); }
+  .grafico { display: flex; align-items: flex-end; gap: 5px; height: 110px; margin: 20px 0 8px; }
+  .grafico .barra { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; height: 100%; }
+  .grafico .barra span { width: 100%; border-radius: 6px 6px 3px 3px; background: var(--azul-gelo); transition: height .6s cubic-bezier(.2,.8,.2,1); }
+  .grafico .barra.pico span { background: var(--azul); }
+  .grafico .barra.agora span { background: var(--sol); }
+  .grafico .barra.fechado span { background: repeating-linear-gradient(45deg, var(--areia-2) 0 4px, transparent 4px 8px); }
+  .grafico .barra small { font-size: 10.5px; color: var(--tinta-3); font-weight: 700; }
+  .hoje-rodape { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0; }
+  .hoje-rodape div { background: var(--areia); border-radius: 14px; padding: 12px; }
+  .hoje-rodape .numero { font-size: 28px; display: block; }
+  .hoje-rodape .miudo { font-size: 11.5px; }
+
+  /* faixas */
+  .cabeca { display: grid; gap: 14px; margin-bottom: 40px; }
+  @media (min-width: 900px) { .cabeca { grid-template-columns: 1fr 1fr; align-items: end; gap: 60px; margin-bottom: 56px; } }
+  .cabeca p { margin: 0; font-size: 16.5px; max-width: 46ch; }
+
+  .niveis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (min-width: 900px) { .niveis { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+  .nivel-cartao { padding: 20px; display: flex; flex-direction: column; gap: 14px; min-height: 190px; }
+  .nivel-cartao .numero { font-size: 44px; }
+  .nivel-cartao h4 { margin: 0; font-size: 17px; }
+  .nivel-cartao p { margin: 0; font-size: 13.5px; }
+  .nivel-cartao .rodape { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+
+  .turmas { margin-top: 18px; display: grid; gap: 10px; }
+  @media (min-width: 900px) { .turmas { grid-template-columns: repeat(3, 1fr); } }
+  .turma { padding: 16px 18px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+  .turma .hora { font-family: var(--titulo); font-size: 26px; font-weight: 300; line-height: 1; }
+  .turma .hora small { display: block; font-family: var(--texto); font-size: 11px; font-weight: 700; color: var(--tinta-3); letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+  .turma b { display: block; font-size: 14.5px; }
+  .turma .ocupacao { margin-top: 8px; }
+
+  .profs { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px; margin: 0 -20px; scrollbar-width: none; }
+  .profs::-webkit-scrollbar { display: none; }
+  @media (min-width: 900px) { .profs { margin: 0 -40px; padding: 4px 40px 16px; } }
+  .prof { flex: 0 0 230px; scroll-snap-align: start; border-radius: var(--raio); overflow: hidden; color: #fff; min-height: 300px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; position: relative; }
+  .prof .monograma { font-family: var(--titulo); font-weight: 200; font-size: 120px; line-height: .8; letter-spacing: -.06em; opacity: .9; }
+  .prof b { font-size: 17px; display: block; }
+  .prof span { font-size: 13px; opacity: .8; }
+
+  .dupla { display: grid; gap: 14px; }
+  @media (min-width: 900px) { .dupla { grid-template-columns: 1fr 1fr; } }
+  .bloco { padding: 26px; }
+  .bloco .preco { display: flex; align-items: baseline; gap: 4px 10px; margin: 18px 0 6px; flex-wrap: wrap; }
+  .bloco .preco .numero { font-size: 64px; white-space: nowrap; }
+  .grade-quadras { display: grid; grid-template-columns: 54px repeat(6, 1fr); gap: 4px; margin: 18px 0; font-size: 11px; }
+  .grade-quadras .q { height: 26px; border-radius: 6px; background: var(--verde-claro); display: grid; place-items: center; font-weight: 800; color: #0b7a4f; cursor: pointer; transition: transform .12s; }
+  .grade-quadras .q:hover { transform: scale(1.06); }
+  .grade-quadras .q.ocupada { background: rgba(255,255,255,.08); color: transparent; cursor: default; }
+  .grade-quadras .q.escolhida { background: var(--sol); color: #fff; }
+  .grade-quadras .h { color: rgba(244,241,234,.6); font-weight: 700; display: flex; align-items: center; }
+  .grade-quadras .cab { color: rgba(244,241,234,.6); text-align: center; font-weight: 700; }
+
+  .jogos { display: grid; gap: 10px; }
+  @media (min-width: 900px) { .jogos { grid-template-columns: repeat(3, 1fr); } }
+  .jogo { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .jogo-topo { display: flex; justify-content: space-between; align-items: center; }
+  .jogo .hora { font-family: var(--titulo); font-size: 34px; font-weight: 300; line-height: 1; }
+
+  .eventos { display: grid; gap: 12px; }
+  @media (min-width: 900px) { .eventos { grid-template-columns: repeat(3, 1fr); } }
+  .evento { border-radius: var(--raio); overflow: hidden; position: relative; min-height: 360px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
+  .evento::before { content: ""; position: absolute; inset: 0; background: var(--foto) center/cover; }
+  .evento::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,22,64,0) 30%, rgba(6,22,64,.92) 100%); }
+  .evento > * { position: relative; z-index: 1; }
+  .evento h4 { font-family: var(--titulo); font-weight: 400; font-size: 26px; margin: 10px 0 6px; line-height: 1.1; }
+  .evento p { margin: 0; font-size: 14px; opacity: .85; }
+
+  .torneios { display: grid; gap: 0; border-top: 1px solid var(--linha-clara); }
+  .torneio { display: grid; grid-template-columns: 1fr auto; gap: 8px 20px; padding: 22px 0; border-bottom: 1px solid var(--linha-clara); }
+  @media (min-width: 900px) { .torneio { grid-template-columns: 220px 1fr auto; align-items: center; } }
+  .torneio h4 { font-family: var(--titulo); font-weight: 300; font-size: 28px; margin: 0; line-height: 1.1; }
+
+  .foto-larga { border-radius: var(--raio); overflow: hidden; position: relative; aspect-ratio: 16/10; }
+  .foto-larga img { width: 100%; height: 100%; object-fit: cover; }
+  .foto-larga figcaption { position: absolute; left: 16px; bottom: 16px; background: rgba(6,22,64,.75); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 12.5px; backdrop-filter: blur(6px); }
+
+  .contato { display: grid; gap: 14px; }
+  @media (min-width: 900px) { .contato { grid-template-columns: 1.2fr 1fr; } }
+  .mapa { border-radius: var(--raio); min-height: 280px; background:
+      linear-gradient(0deg, rgba(11,74,197,.06), rgba(11,74,197,.06)),
+      repeating-linear-gradient(0deg, transparent 0 46px, rgba(6,22,64,.06) 46px 47px),
+      repeating-linear-gradient(90deg, transparent 0 46px, rgba(6,22,64,.06) 46px 47px), var(--areia-2);
+    position: relative; overflow: hidden; }
+  .mapa .via { position: absolute; background: #fff; opacity: .9; }
+  .mapa .pino { position: absolute; left: 54%; top: 44%; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .mapa .pino span { background: var(--noite); color: #fff; padding: 8px 12px; border-radius: 12px; font-weight: 700; font-size: 13px; white-space: nowrap; }
+  .mapa .pino i { width: 14px; height: 14px; border-radius: 50%; background: var(--sol); box-shadow: 0 0 0 6px rgba(255,122,47,.25); }
+  .infos { padding: 24px; display: grid; gap: 18px; }
+  .infos div b { display: block; font-size: 15px; margin-top: 4px; }
+
+  footer { padding: 40px 0 120px; }
+  footer .largura { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; }
+
+  .barra-fixa { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 70; display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px; border-radius: 999px; background: rgba(6,22,64,.92); backdrop-filter: blur(10px); box-shadow: 0 18px 40px -18px rgba(6,22,64,.9); transform: translateY(120%); transition: transform .3s; }
+  .barra-fixa.mostrar { transform: none; }
+  .barra-fixa .botao { height: 46px; }
+  @media (min-width: 980px) { .barra-fixa { display: none; } }
+  .selo-exemplo { display: none; }
+  @media (min-width: 980px) { .selo-exemplo { display: inline-block; bottom: 12px; } }
+  .selo-rodape { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #ffb58a; text-decoration: none; }
+
+  /* folha de reserva */
+  .folha-fundo { position: fixed; inset: 0; background: rgba(6,22,64,.5); z-index: 90; opacity: 0; pointer-events: none; transition: .25s; }
+  .folha { position: fixed; left: 0; right: 0; bottom: 0; z-index: 91; background: var(--areia); border-radius: 26px 26px 0 0; padding: 10px 18px 26px; transform: translateY(105%); transition: transform .32s cubic-bezier(.2,.8,.2,1); max-width: 560px; margin: 0 auto; }
+  .aberta .folha-fundo { opacity: 1; pointer-events: auto; }
+  .aberta .folha { transform: none; }
+  .folha .puxador { width: 40px; height: 5px; border-radius: 9px; background: var(--areia-3); margin: 0 auto 16px; }
+  .opcoes { display: grid; gap: 8px; margin-top: 16px; }
+  .opcao { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 14px; text-decoration: none; }
+  .opcao .ic { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--azul-gelo); color: var(--azul); }
+  .opcao b { display: block; }
+  .opcao small { color: var(--tinta-2); }
+</style>
+</head>
+<body>
+
+<header class="topo" id="topo">
+  <div class="largura">
+    <a class="marca" href="#" id="marca"></a>
+    <nav class="menu">
+      <a href="#aulas">Aulas</a><a href="#dayuse">Day use e quadras</a><a href="#jogos">Jogos abertos</a><a href="#eventos">Eventos</a><a href="#torneios">Torneios</a><a href="#contato">Como chegar</a>
+    </nav>
+    <button class="botao botao-sol" data-reservar>Reservar</button>
+  </div>
+</header>
+
+<section class="capa" style="padding:0">
+  <div class="capa-foto" role="img" aria-label="Entrada da arena com as quadras e coqueiros ao fundo"></div>
+  <div class="largura">
+    <div class="capa-grade">
+      <div>
+        <span class="rotulo" style="color:rgba(255,255,255,.7)">Central Garden · Aracaju · desde 2021</span>
+        <h1 class="titulo-xl">Pé na areia e <em>jogo garantido.</em></h1>
+        <p class="lead">A primeira arena de beach tennis de Sergipe agora mostra quem vai jogar antes de você sair de casa. Doze quadras, aula para todo nível e reserva pelo celular.</p>
+        <div class="acoes">
+          <a class="botao botao-sol" href="app.html#reservar-experimental">Aula experimental grátis</a>
+          <a class="botao botao-linha" href="#hoje" style="color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)">Quem vai jogar hoje</a>
+        </div>
+      </div>
+      <div class="cartao hoje" id="hoje">
+        <div class="hoje-topo">
+          <span class="rotulo ao-vivo" id="hoje-data">Hoje</span>
+          <span class="chip chip-verde" id="hoje-livres">5 quadras livres</span>
+        </div>
+        <h3 id="hoje-titulo">—</h3>
+        <span class="miudo" id="hoje-sub">Alunos confirmados nas turmas, day use reservado e jogos abertos.</span>
+        <div class="grafico" id="grafico"></div>
+        <div class="hoje-rodape">
+          <div><span class="numero" id="n-agora">0</span><span class="miudo">na areia agora</span></div>
+          <div><span class="numero" id="n-jogos">0</span><span class="miudo">jogos abertos</span></div>
+          <div><span class="numero" id="n-vagas">0</span><span class="miudo">vagas em aula</span></div>
+        </div>
+        <a class="botao botao-azul botao-bloco" href="app.html">Ver quem vai e dizer “tô indo”</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="aulas" class="chao-areia">
+  <div class="largura">
+    <div class="cabeca">
+      <div>
+        <span class="rotulo">01 · Aulas</span>
+        <h2 class="titulo-l" style="margin-top:12px">Do primeiro saque <em>ao PRO.</em></h2>
+      </div>
+      <p class="suave">Turmas de até 8 alunos por nível, com os professores que levam o nome do ASA aos torneios. Você vê as vagas, marca a experimental e entra na lista de espera se a turma estiver cheia.</p>
+    </div>
+    <div class="niveis" id="niveis"></div>
+    <div style="display:flex;justify-content:space-between;align-items:end;margin-top:44px;gap:12px">
+      <div><span class="rotulo">Próximas turmas com vaga</span></div>
+      <a class="miudo" href="app.html#reservar-experimental" style="font-weight:700;color:var(--azul)">Ver a semana toda →</a>
+    </div>
+    <div class="turmas" id="turmas"></div>
+
+    <div style="margin-top:64px">
+      <span class="rotulo">Professores</span>
+      <div class="profs" id="profs" style="margin-top:16px"></div>
+    </div>
+  </div>
+</section>
+
+<section id="dayuse" class="chao-areia" style="padding-top:0">
+  <div class="largura">
+    <div class="cabeca">
+      <div>
+        <span class="rotulo">02 · Day use e quadras</span>
+        <h2 class="titulo-l" style="margin-top:12px">Chega, joga <em>e fica.</em></h2>
+      </div>
+      <p class="suave">Day use com reserva pelo celular e pagamento no Pix. Para jogar com a sua turma, alugue a quadra no horário livre, sem esperar resposta no direct.</p>
+    </div>
+    <div class="dupla">
+      <div class="cartao bloco">
+        <span class="rotulo">Day use</span>
+        <div class="preco"><span class="numero" id="preco-dayuse">R$ 25</span><span class="suave">por pessoa</span></div>
+        <p class="suave" style="margin:0 0 18px">Todos os dias. No sábado, os R$ 25 viram consumação no Verano: você entra, joga e gasta no cardápio e no bar.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px">
+          <span class="chip">Areia liberada</span><span class="chip">Raquete para emprestar</span><span class="chip chip-sol">Sábado com consumação</span>
+        </div>
+        <a class="botao botao-sol" href="app.html#reservar-dayuse">Reservar day use</a>
+      </div>
+      <div class="cartao-noite bloco">
+        <span class="rotulo">Aluguel de quadra · hoje</span>
+        <div class="preco"><span class="numero">R$ 90</span><span class="suave">a hora · valor de exemplo</span></div>
+        <div class="grade-quadras" id="grade-quadras"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="miudo" style="color:rgba(244,241,234,.6)" id="escolha-quadra">Toque num horário verde</span>
+          <a class="botao botao-branco botao-p" href="app.html#reservar-quadra">Reservar quadra</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="jogos" class="chao-noite">
+  <div class="largura">
+    <div class="cabeca">
+      <div>
+        <span class="rotulo">03 · Jogos abertos</span>
+        <h2 class="titulo-l" style="margin-top:12px">Sem dupla? <em>Entra num jogo.</em></h2>
+      </div>
+      <p class="suave">Quem quer jogar abre um jogo com hora e nível. Quem está sozinho entra. Ninguém mais sai de casa sem saber se vai ter gente.</p>
+    </div>
+    <div class="jogos" id="jogos-lista"></div>
+  </div>
+</section>
+
+<section id="eventos" class="chao-areia">
+  <div class="largura">
+    <div class="cabeca">
+      <div>
+        <span class="rotulo">04 · Fim de semana e Verano</span>
+        <h2 class="titulo-l" style="margin-top:12px">A programação <em>que hoje some do story.</em></h2>
+      </div>
+      <p class="suave">O que acontece no sábado e no domingo fica no site e no app a semana inteira, com reserva de mesa, day use e aviso para quem confirmou.</p>
+    </div>
+    <div class="eventos" id="eventos-lista"></div>
+    <div class="dupla" style="margin-top:14px">
+      <figure class="foto-larga" style="margin:0">
+        <img src="img/turma.jpg" alt="Turma reunida na areia num aniversário">
+        <figcaption>Aniversário na areia · julho de 2026</figcaption>
+      </figure>
+      <div class="cartao-azul bloco" style="display:flex;flex-direction:column;justify-content:space-between;gap:22px">
+        <div>
+          <span class="rotulo" style="color:rgba(255,255,255,.7)">Aniversários e empresas</span>
+          <h3 class="titulo-m" style="margin:14px 0 10px">Sua festa com quadra, professor e Verano.</h3>
+          <p style="margin:0;opacity:.85">Escolha a data, o número de pessoas e o pacote. A arena responde com a proposta no mesmo dia.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="botao botao-branco" href="app.html#reservar-evento">Pedir orçamento</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="torneios" class="chao-noite">
+  <div class="largura">
+    <div class="cabeca">
+      <div>
+        <span class="rotulo">05 · Torneios</span>
+        <h2 class="titulo-l" style="margin-top:12px">Palco do <em>circuito mundial.</em></h2>
+      </div>
+      <p class="suave">Em janeiro de 2026 o ASA recebeu o ITF World Tour BT100 Sergipe. Os torneios da casa ficam aqui, com data, categorias e aviso para quem quer jogar o próximo.</p>
+    </div>
+    <div class="torneios" id="torneios-lista"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:28px">
+      <button class="botao botao-sol" onclick="ASA.aviso('Pronto: você recebe o aviso quando abrirem as inscrições.')">Avise-me do próximo torneio</button>
+    </div>
+  </div>
+</section>
+
+<section id="contato" class="chao-areia">
+  <div class="largura">
+    <div class="cabeca">
+      <div>
+        <span class="rotulo">06 · Como chegar</span>
+        <h2 class="titulo-l" style="margin-top:12px">Central <em>Garden.</em></h2>
+      </div>
+      <p class="suave">A maior arena de areia de Sergipe: beach tennis, vôlei de praia e o pôr do sol que só a nossa areia tem.</p>
+    </div>
+    <div class="contato">
+      <div class="mapa">
+        <div class="via" style="left:-5%;right:-5%;top:58%;height:14px;transform:rotate(-8deg)"></div>
+        <div class="via" style="left:38%;width:10px;top:-10%;bottom:-10%;transform:rotate(14deg)"></div>
+        <div class="pino"><span>ASA Beach Tennis</span><i></i></div>
+      </div>
+      <div class="cartao infos">
+        <div><span class="rotulo">Endereço</span><b id="endereco"></b></div>
+        <div><span class="rotulo">Horário</span><b>Segunda a sexta, 6h às 11h e 15h às 22h<br>Sábado, 7h às 11h e 16h às 22h · domingo, 16h às 20h</b></div>
+        <div><span class="rotulo">Aula experimental</span><b>Grátis, marcada pelo app em turma com vaga</b></div>
+        <div><span class="rotulo">WhatsApp</span><b id="whats"></b></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="botao botao-azul" href="#">Abrir no mapa</a>
+          <a class="botao botao-linha" href="#">Chamar no WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="chao-noite">
+  <div class="largura">
+    <a class="marca" href="#" id="marca-rodape"></a>
+    <span class="miudo" style="color:rgba(244,241,234,.55)">@asabeachtennis · Os melhores estão aqui · Site e sistema: Turma Cheia</span>
+    <a class="selo-rodape" href="index.html">Protótipo · turmas, vagas e números são de exemplo</a>
+  </div>
+</footer>
+
+<div class="barra-fixa" id="barra-fixa">
+  <button class="botao botao-sol" data-reservar>Reservar</button>
+  <a class="botao botao-linha" href="app.html" style="color:#fff;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)">Quem vai hoje</a>
+</div>
+
+<a class="selo-exemplo" href="index.html">Protótipo · <b>dados de exemplo</b></a>
+
+<div id="folha-raiz">
+  <div class="folha-fundo" data-fechar></div>
+  <div class="folha" role="dialog" aria-label="Reservar">
+    <div class="puxador"></div>
+    <span class="rotulo">Reservar no ASA</span>
+    <h3 class="titulo-s" style="margin-top:8px">O que você quer marcar?</h3>
+    <div class="opcoes">
+      <a class="cartao opcao" href="app.html#reservar-experimental"><span class="ic">◎</span><span><b>Aula experimental grátis</b><small>Escolha nível, professor e horário com vaga</small></span><span>→</span></a>
+      <a class="cartao opcao" href="app.html#reservar-dayuse"><span class="ic">☼</span><span><b>Day use</b><small>R$ 25 por pessoa, pago no Pix</small></span><span>→</span></a>
+      <a class="cartao opcao" href="app.html#reservar-quadra"><span class="ic">▦</span><span><b>Quadra</b><small>Veja os horários livres das 12 quadras</small></span><span>→</span></a>
+      <a class="cartao opcao" href="app.html#reservar-evento"><span class="ic">✦</span><span><b>Aniversário ou empresa</b><small>Peça a proposta com data e número de pessoas</small></span><span>→</span></a>
+    </div>
+  </div>
+</div>
+
+<script src="dados.js"></script>
+<script>
+  const $ = (s) => document.querySelector(s);
+  const hoje = ASA.hoje();
+  const agora = ASA.horaAgora();
+  $("#marca").innerHTML = ASA.marca("#fff") + `<span class="marca-sub">Arena Schuster<br>Aracaju</span>`;
+  $("#marca-rodape").innerHTML = ASA.marca("#fff") + `<span class="marca-sub">Beach<br>Tennis</span>`;
+  $("#endereco").textContent = ASA.arena.endereco;
+  $("#whats").textContent = ASA.arena.whatsapp;
+
+  // hoje no ASA
+  const mov = ASA.movimento(hoje);
+  const abertas = mov.filter((m) => !m.fechado);
+  const pico = abertas.reduce((a, b) => (b.pessoas > a.pessoas ? b : a));
+  const atual = mov.find((m) => m.h === agora) || mov[0];
+  const max = Math.max(...mov.map((m) => m.pessoas));
+  $("#hoje-data").textContent = "Hoje · " + ASA.dataCurta(hoje);
+  $("#hoje-titulo").innerHTML = `<b>${pico.h}h</b> é o horário mais cheio de hoje: <b>${pico.pessoas} pessoas</b> na areia.`;
+  $("#hoje-livres").textContent = `${atual.livres} quadras livres às ${atual.h}h`;
+  $("#grafico").innerHTML = mov.filter((m) => m.h >= 15 || m.h <= 10).map((m) => {
+    const cls = m.fechado ? "fechado" : m.h === agora ? "agora" : m === pico ? "pico" : "";
+    const alt = m.fechado ? 18 : Math.max(6, (m.pessoas / max) * 100);
+    return `<div class="barra ${cls}" title="${m.h}h: ${m.pessoas} pessoas"><span style="height:0%" data-h="${alt}%"></span><small>${m.h}</small></div>`;
+  }).join("");
+  requestAnimationFrame(() => setTimeout(() => document.querySelectorAll("#grafico span").forEach((s) => (s.style.height = s.dataset.h)), 80));
+  $("#n-agora").textContent = atual.pessoas;
+  $("#n-jogos").textContent = ASA.jogosAbertos.length;
+  const turmasHoje = ASA.turmasDoDia(hoje);
+  const vagasHoje = turmasHoje.filter((t) => +t.hora.slice(0, 2) >= agora).reduce((a, t) => a + (t.vagas - t.confirmados), 0);
+  $("#n-vagas").textContent = vagasHoje || 6;
+
+  // níveis
+  const semana = [...Array(7)].map((_, i) => ASA.somaDias(hoje, i));
+  const todas = semana.flatMap((d) => ASA.turmasDoDia(d).map((t) => ({ ...t, data: d })));
+  const descr = { 1: "Pegada, saque e as primeiras trocas sem medo da bola.", 2: "Posicionamento de dupla, voleio e jogo de rede.", 3: "Treino de torneio, smash e tática com quem joga o circuito.", K: "Team Lara Kids: coordenação e jogo, com turma da idade." };
+  $("#niveis").innerHTML = [1, 2, 3, "K"].map((n, i) => {
+    const t = todas.filter((x) => x.nivel === n);
+    const vagas = t.reduce((a, x) => a + (x.vagas - x.confirmados), 0);
+    const escuro = i === 3;
+    return `<div class="${escuro ? "cartao-noite" : "cartao"} nivel-cartao">
+      <span class="rotulo">${ASA.NIVEIS[n]}</span>
+      <span><span class="numero" style="display:block">${t.length}</span><span class="miudo" style="${escuro ? "color:rgba(244,241,234,.6)" : ""}">turmas nos próximos 7 dias</span></span>
+      <p class="suave" style="${escuro ? "color:rgba(244,241,234,.75)" : ""}">${descr[n]}</p>
+      <div class="rodape"><span class="chip ${vagas ? "chip-verde" : "chip-sol"}">${vagas ? vagas + " vagas" : "lista de espera"}</span>${n === "K" ? "" : ASA.nivel(n)}</div>
+    </div>`;
+  }).join("");
+
+  const proximas = todas.filter((t) => (t.data > hoje || +t.hora.slice(0, 2) > agora) && t.confirmados < t.vagas && t.nivel !== "K").slice(0, 6);
+  $("#turmas").innerHTML = proximas.map((t) => {
+    const livres = t.vagas - t.confirmados;
+    return `<a class="cartao turma" href="app.html#reservar-experimental" style="text-decoration:none">
+      <span class="hora">${+t.hora.slice(0, 2)}h<small>${ASA.DIAS_CURTOS[t.data.getDay()]} ${t.data.getDate()}</small></span>
+      <span><b>${t.nomeNivel} · ${t.prof.curto}</b><span class="miudo">${t.confirmados} de ${t.vagas} confirmados</span><div class="ocupacao"><span style="width:${(t.confirmados / t.vagas) * 100}%"></span></div></span>
+      <span class="chip chip-verde">${livres} ${livres > 1 ? "vagas" : "vaga"}</span>
+    </a>`;
+  }).join("");
+
+  $("#profs").innerHTML = ASA.professores.map((p, i) => `
+    <div class="prof" style="background:radial-gradient(120% 80% at 100% 0%,rgba(255,255,255,.18),rgba(255,255,255,0) 55%),${i % 2 ? "var(--noite)" : "var(--azul)"}">
+      <span class="monograma">${ASA.iniciais(p.nome.replace(/“.*”/, ""))}</span>
+      <div><b>${p.nome}</b><span>${p.foco}</span></div>
+    </div>`).join("");
+
+  // quadras
+  const horasGrade = [17, 18, 19, 20, 21];
+  const r = ASA.semente(hoje.getDate() + 3);
+  let grade = `<span></span>` + [1, 2, 3, 4, 5, 6].map((q) => `<span class="cab">Q${q}</span>`).join("");
+  horasGrade.forEach((h) => {
+    grade += `<span class="h">${h}h</span>`;
+    for (let q = 1; q <= 6; q++) {
+      const ocupada = r() < (h >= 19 ? 0.8 : 0.45);
+      grade += `<button class="q ${ocupada ? "ocupada" : ""}" data-h="${h}" data-q="${q}" ${ocupada ? "disabled" : ""}>${ocupada ? "" : "livre"}</button>`;
+    }
+  });
+  $("#grade-quadras").innerHTML = grade;
+  $("#grade-quadras").addEventListener("click", (e) => {
+    const b = e.target.closest(".q:not(.ocupada)");
+    if (!b) return;
+    document.querySelectorAll(".q.escolhida").forEach((x) => { x.classList.remove("escolhida"); x.textContent = "livre"; });
+    b.classList.add("escolhida"); b.textContent = "✓";
+    $("#escolha-quadra").textContent = `Quadra ${b.dataset.q} às ${b.dataset.h}h · R$ 90`;
+  });
+
+  // jogos abertos
+  $("#jogos-lista").innerHTML = ASA.jogosAbertos.map((j) => `
+    <div class="cartao-noite jogo" style="background:rgba(255,255,255,.05);border:1px solid var(--linha-clara)">
+      <div class="jogo-topo"><span class="hora">${j.hora.replace(":00", "h")}</span><span class="chip chip-noite">${ASA.NIVEIS[j.nivel]}</span></div>
+      <div><b>${j.tipo}</b><div class="miudo" style="color:rgba(244,241,234,.6)">Aberto por ${j.quem} · falta${j.faltam > 1 ? "m" : ""} ${j.faltam}</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center">${ASA.avatares(j.ja, 4)}<button class="botao botao-sol botao-p" onclick="ASA.aviso('Você entrou no jogo das ${j.hora.replace(":00", "h")}. ${j.quem} foi avisada.')">Entrar</button></div>
+    </div>`).join("");
+
+  $("#eventos-lista").innerHTML = ASA.eventos.map((ev) => `
+    <article class="evento" style="--foto:url(${ev.foto})">
+      <span class="chip chip-noite" style="align-self:flex-start">${ev.tag} · ${ev.quando}, ${ev.hora}</span>
+      <h4>${ev.titulo}</h4><p>${ev.texto}</p>
+    </article>`).join("");
+
+  $("#torneios-lista").innerHTML = ASA.torneios.map((t) => `
+    <div class="torneio">
+      <span class="rotulo">${t.quando}</span>
+      <div><h4>${t.nome}</h4><span class="suave" style="font-size:14px">${t.texto}</span></div>
+      <span class="chip chip-noite">${t.status}</span>
+    </div>`).join("");
+
+  // topo sólido e barra fixa
+  const topo = $("#topo"), barra = $("#barra-fixa");
+  const aoRolar = () => { topo.classList.toggle("solido", scrollY > 40); barra.classList.toggle("mostrar", scrollY > window.innerHeight * 0.6); };
+  addEventListener("scroll", aoRolar, { passive: true }); aoRolar();
+
+  // folha de reserva
+  const raiz = $("#folha-raiz");
+  document.querySelectorAll("[data-reservar]").forEach((b) => b.addEventListener("click", () => raiz.classList.add("aberta")));
+  raiz.addEventListener("click", (e) => { if (e.target.matches("[data-fechar]")) raiz.classList.remove("aberta"); });
+</script>
+</body>
+</html>

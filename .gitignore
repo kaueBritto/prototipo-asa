@@ -1,0 +1,11 @@
+# fica só no computador: rascunhos, fotos de conferência e anotações da pesquisa
+capturas/
+fotos-capturadas/
+LEIA-ME.md
+servidor.cjs
+fotografar.cjs
+
+# fotos capturadas que as páginas não usam
+img/arena-topo.jpg
+img/comemoracao.jpg
+img/kids-noite.jpg

@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>App do jogador · ASA Beach Tennis</title>
+<meta name="theme-color" content="#061640">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="asa.css">
+<link rel="stylesheet" href="casca.css">
+<style>
+  body.chao-areia { min-height: 100vh; }
+
+  /* movimento */
+  .mov { padding: 18px; }
+  .horas { display: flex; gap: 6px; overflow-x: auto; margin: 14px -18px 0; padding: 0 18px 2px; scrollbar-width: none; }
+  .horas::-webkit-scrollbar { display: none; }
+  .hora-btn { flex: none; width: 50px; padding: 8px 0 6px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); color: #fff; }
+  .hora-btn .mini { width: 6px; border-radius: 3px; background: rgba(159,188,255,.55); }
+  .hora-btn small { font-size: 12px; font-weight: 700; }
+  .hora-btn.ativa { background: #fff; color: var(--noite); }
+  .hora-btn.ativa .mini { background: var(--sol); }
+  .hora-btn.fechada { opacity: .35; pointer-events: none; }
+  .mov-num { display: flex; align-items: baseline; gap: 10px; margin-top: 18px; }
+  .mov-num .numero { font-size: 64px; }
+  .partes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 14px; }
+  .partes div { background: rgba(255,255,255,.07); border-radius: 12px; padding: 10px; }
+  .partes b { font-size: 18px; display: block; font-family: var(--titulo); font-weight: 400; }
+  .partes span { font-size: 11px; color: rgba(244,241,234,.6); }
+  .niveis-barra { display: flex; height: 8px; border-radius: 9px; overflow: hidden; margin: 16px 0 8px; gap: 2px; }
+  .niveis-barra span:nth-child(1) { background: #9fbcff; }
+  .niveis-barra span:nth-child(2) { background: #fff; }
+  .niveis-barra span:nth-child(3) { background: var(--sol); }
+  .legenda { display: flex; gap: 12px; font-size: 11.5px; color: rgba(244,241,234,.7); flex-wrap: wrap; }
+  .legenda i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+  .quem { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--linha-clara); }
+  .quem .avatar { border-color: var(--noite); }
+  .botao-indo { margin-top: 16px; }
+  .botao-indo.marcado { background: var(--verde); box-shadow: none; }
+
+  .aula { padding: 16px; }
+  .aula-topo { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .aula h3 { margin: 6px 0 2px; font-family: var(--titulo); font-weight: 400; font-size: 24px; line-height: 1.1; }
+  .vou { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .vou button { height: 46px; border-radius: 14px; font-weight: 800; border: 1px solid var(--linha); background: #fff; }
+  .vou button.sim.marcado { background: var(--verde); color: #fff; border-color: var(--verde); }
+  .vou button.nao.marcado { background: var(--noite); color: #fff; border-color: var(--noite); }
+  .rolagem-x { display: flex; gap: 10px; overflow-x: auto; margin: 0 -16px; padding: 0 16px 4px; scrollbar-width: none; scroll-snap-type: x mandatory; }
+  .rolagem-x::-webkit-scrollbar { display: none; }
+  .ev { flex: 0 0 74%; scroll-snap-align: start; border-radius: 18px; overflow: hidden; min-height: 200px; position: relative; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px; }
+  .ev::before { content: ""; position: absolute; inset: 0; background: var(--foto) center/cover; }
+  .ev::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,22,64,0) 25%, rgba(6,22,64,.92)); }
+  .ev > * { position: relative; z-index: 1; }
+  .ev b { font-size: 17px; display: block; margin-top: 6px; }
+
+  /* reservar */
+  .segmentos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(255,255,255,.6); border: 1px solid var(--linha); border-radius: 16px; padding: 4px; }
+  .segmentos button { height: 40px; border-radius: 12px; font-size: 12.5px; font-weight: 800; color: var(--tinta-2); }
+  .segmentos button.ativo { background: var(--noite); color: #fff; }
+  .dias { display: flex; gap: 6px; overflow-x: auto; margin: 16px -16px 0; padding: 0 16px 2px; scrollbar-width: none; }
+  .dias::-webkit-scrollbar { display: none; }
+  .dia { flex: none; width: 54px; height: 66px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: rgba(255,255,255,.65); border: 1px solid var(--linha); }
+  .dia small { font-size: 11px; font-weight: 800; color: var(--tinta-3); text-transform: uppercase; letter-spacing: .06em; }
+  .dia b { font-family: var(--titulo); font-weight: 400; font-size: 22px; }
+  .dia.ativo { background: var(--azul); color: #fff; border-color: var(--azul); }
+  .dia.ativo small { color: rgba(255,255,255,.75); }
+  .turma-op { cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+  .turma-op.escolhida { border-color: var(--azul); box-shadow: 0 0 0 2px var(--azul); }
+
+  .grade-wrap { overflow-x: auto; margin: 16px -16px 0; padding: 0 16px; scrollbar-width: none; }
+  .grade-wrap::-webkit-scrollbar { display: none; }
+  .grade { display: grid; grid-template-columns: 40px repeat(12, 38px); gap: 4px; font-size: 11px; width: max-content; }
+  .grade .cab-q { text-align: center; font-weight: 800; color: var(--tinta-3); }
+  .grade .h { font-weight: 800; color: var(--tinta-2); display: flex; align-items: center; }
+  .grade button { height: 34px; border-radius: 9px; background: var(--verde-claro); color: #0b7a4f; font-weight: 800; }
+  .grade button.ocupada { background: var(--areia-2); color: transparent; pointer-events: none; }
+  .grade button.escolhida { background: var(--sol); color: #fff; }
+
+  .contador { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; margin-top: 14px; }
+  .contador .ctrl { display: flex; align-items: center; gap: 14px; }
+  .contador button { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--linha); background: #fff; font-size: 20px; font-weight: 600; }
+  .contador .numero { font-size: 30px; min-width: 24px; text-align: center; }
+
+  .total { position: sticky; bottom: 92px; margin-top: 18px; padding: 12px 12px 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-radius: 20px; z-index: 5; }
+  .total b { font-size: 20px; font-family: var(--titulo); font-weight: 400; display: block; }
+
+  /* perfil */
+  .evolucao { padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .evolucao .numero { font-size: 40px; display: block; }
+  .semanas { display: flex; gap: 4px; align-items: flex-end; height: 54px; grid-column: 1 / -1; }
+  .semanas span { flex: 1; border-radius: 5px; background: var(--azul-gelo); }
+  .semanas span.cheia { background: var(--azul); }
+
+  .qr { width: 180px; height: 180px; margin: 18px auto; padding: 12px; background: #fff; border-radius: 18px; border: 1px solid var(--linha); }
+  .codigo-pix { font-family: ui-monospace, monospace; font-size: 11px; background: #fff; border: 1px dashed var(--areia-3); border-radius: 12px; padding: 10px; word-break: break-all; color: var(--tinta-2); }
+</style>
+</head>
+<body class="chao-areia">
+<div class="palco">
+  <div class="palco-texto">
+    <a class="marca" href="index.html" id="marca-palco" style="color:var(--azul)"></a>
+    <span class="rotulo" style="display:block;margin-top:34px">App do jogador e do aluno</span>
+    <h1 class="titulo-l">Ninguém mais vai <em>sozinho sem saber.</em></h1>
+    <p class="suave" style="font-size:16px;margin:0">O app mostra quantas pessoas vão estar na areia em cada horário, de que nível, e onde tem jogo aberto. O aluno confirma a aula com um toque e a vaga de quem falta vai para a lista de espera.</p>
+    <ul class="palco-lista">
+      <li><span class="n">1</span><span><b>Hoje</b><span class="suave">Toque nos horários e veja o movimento. “Tô indo” entra na conta.</span></span></li>
+      <li><span class="n">2</span><span><b>Reservar</b><span class="suave">Experimental, day use e quadra com Pix, sem esperar o direct.</span></span></li>
+      <li><span class="n">3</span><span><b>Aulas</b><span class="suave">Vou / Não vou, reposição e lista de espera automática.</span></span></li>
+    </ul>
+    <div class="palco-nav">
+      <a class="botao botao-linha botao-p" href="index.html">← Apresentação</a>
+      <a class="botao botao-linha botao-p" href="site.html">Site</a>
+      <a class="botao botao-linha botao-p" href="professor.html">Professor</a>
+      <a class="botao botao-linha botao-p" href="gestao.html">Gestão</a>
+    </div>
+  </div>
+
+  <div class="celular">
+    <div class="tela chao-areia" id="tela">
+      <div class="status"><span>9:41</span><i>●●●● ᯤ ▮</i></div>
+      <div class="tela-rolagem" id="rolagem">
+        <div class="conteudo">
+
+          <!-- HOJE -->
+          <div class="vista ativa" data-vista="hoje">
+            <div class="cab">
+              <div>
+                <span class="rotulo" id="data-hoje">Hoje</span>
+                <h1 id="ola">Boa tarde, Lucas</h1>
+              </div>
+              <button class="sino" aria-label="Avisos" onclick="ASA.aviso('Marina abriu um jogo intermediário às 19h. Falta 1.')">🔔</button>
+            </div>
+
+            <div class="cartao-noite mov">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span class="rotulo ao-vivo">Movimento de hoje</span>
+                <span class="chip chip-noite" id="livres">— quadras livres</span>
+              </div>
+              <div class="horas" id="horas"></div>
+              <div class="mov-num"><span class="numero" id="mov-total">0</span><span id="mov-legenda" style="color:rgba(244,241,234,.75)">pessoas às 19h</span></div>
+              <div class="partes">
+                <div><b id="p-aula">0</b><span>em aula</span></div>
+                <div><b id="p-day">0</b><span>day use</span></div>
+                <div><b id="p-jogo">0</b><span>em jogos</span></div>
+              </div>
+              <div class="niveis-barra" id="niveis-barra"><span></span><span></span><span></span></div>
+              <div class="legenda"><span><i style="background:#9fbcff"></i>Iniciante</span><span><i style="background:#fff"></i>Intermediário</span><span><i style="background:var(--sol)"></i>Avançado</span></div>
+              <div class="quem">
+                <span style="font-size:13px"><b id="do-nivel">9</b> do seu nível vão</span>
+                <span id="quem-av"></span>
+              </div>
+              <button class="botao botao-sol botao-bloco botao-indo" id="indo">Tô indo às 19h</button>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Jogos abertos</span><button onclick="abrirFolha('novo-jogo')">+ Abrir jogo</button></div>
+              <div class="lista" id="jogos"></div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Sua próxima aula</span><button onclick="irPara('aulas')">Todas</button></div>
+              <div id="proxima-aula"></div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">No fim de semana</span><button onclick="irPara('eventos')">Ver tudo</button></div>
+              <div class="rolagem-x" id="eventos-mini"></div>
+            </div>
+          </div>
+
+          <!-- RESERVAR -->
+          <div class="vista" data-vista="reservar">
+            <div class="cab"><div><span class="rotulo">Reservar</span><h1>O que vamos marcar?</h1></div></div>
+            <div class="segmentos" id="segmentos">
+              <button data-seg="experimental" class="ativo">Aula</button>
+              <button data-seg="dayuse">Day use</button>
+              <button data-seg="quadra">Quadra</button>
+              <button data-seg="evento">Evento</button>
+            </div>
+
+            <div data-painel="experimental">
+              <div class="dias" id="dias-exp"></div>
+              <div class="chips" id="niveis-exp"></div>
+              <div class="lista" id="turmas-exp" style="margin-top:14px"></div>
+              <div class="cartao-noite total" id="total-exp" style="display:none">
+                <span><span class="miudo" style="color:rgba(244,241,234,.6)" id="exp-resumo">—</span><b id="exp-preco">Experimental · R$ 40</b></span>
+                <button class="botao botao-sol botao-p" id="exp-acao">Pagar no Pix</button>
+              </div>
+            </div>
+
+            <div data-painel="dayuse" hidden>
+              <div class="dias" id="dias-day"></div>
+              <div class="chips" id="periodo-day">
+                <button class="ativo" data-p="Manhã">Manhã</button><button data-p="Tarde">Tarde</button><button data-p="Noite">Noite</button>
+              </div>
+              <div class="cartao contador">
+                <span><b>Pessoas</b><span class="miudo" style="display:block">R$ 25 por pessoa</span></span>
+                <span class="ctrl"><button id="menos">−</button><span class="numero" id="qtd">2</span><button id="mais">+</button></span>
+              </div>
+              <div class="nota" id="nota-sabado" style="display:none"><span>☼</span><span>No sábado os R$ 25 viram consumação no Verano. Você paga a entrada e gasta no cardápio e no bar.</span></div>
+              <div class="cartao" style="padding:14px 16px;margin-top:12px">
+                <span class="rotulo">Quem também vai nesse período</span>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:13.5px"><b id="day-pessoas">23</b> pessoas confirmadas</span><span id="day-av"></span></div>
+              </div>
+              <div class="cartao-noite total">
+                <span><span class="miudo" style="color:rgba(244,241,234,.6)" id="day-resumo">—</span><b id="day-total">R$ 50</b></span>
+                <button class="botao botao-sol botao-p" onclick="abrirPix(document.querySelector('#day-total').textContent, document.querySelector('#day-resumo').textContent)">Pagar no Pix</button>
+              </div>
+            </div>
+
+            <div data-painel="quadra" hidden>
+              <div class="dias" id="dias-q"></div>
+              <div class="grade-wrap"><div class="grade" id="grade-q"></div></div>
+              <div class="nota"><span>▦</span><span>Verde é livre. A grade é a mesma que a recepção vê: não tem como duas pessoas reservarem a mesma quadra.</span></div>
+              <div class="cartao-noite total">
+                <span><span class="miudo" style="color:rgba(244,241,234,.6)" id="q-resumo">Escolha um horário</span><b id="q-total">R$ 90 / hora</b></span>
+                <button class="botao botao-sol botao-p" id="q-acao">Pagar no Pix</button>
+              </div>
+            </div>
+
+            <div data-painel="evento" hidden>
+              <div class="chips" id="tipo-ev">
+                <button class="ativo">Aniversário</button><button>Empresa</button><button>Day use em grupo</button>
+              </div>
+              <div class="campo"><label>Data</label><input type="date" id="ev-data"></div>
+              <div class="campo"><label>Quantas pessoas</label><select><option>Até 15</option><option selected>16 a 30</option><option>31 a 60</option><option>Mais de 60</option></select></div>
+              <div class="campo"><label>Inclui</label>
+                <div class="chips" style="margin-top:0" id="inclui-ev"><button class="ativo">Quadras</button><button class="ativo">Professor</button><button>Mesa no Verano</button><button>Torneio interno</button></div>
+              </div>
+              <div class="campo"><label>Seu nome</label><input placeholder="Nome de quem organiza" value="Lucas"></div>
+              <button class="botao botao-sol botao-bloco" style="margin-top:18px" onclick="ASA.aviso('Pedido enviado. A arena responde com a proposta no WhatsApp.')">Pedir proposta</button>
+            </div>
+          </div>
+
+          <!-- AULAS -->
+          <div class="vista" data-vista="aulas">
+            <div class="cab"><div><span class="rotulo">Minhas aulas</span><h1>Intermediário · Higor</h1></div></div>
+            <div class="cartao-azul" style="padding:18px">
+              <span class="rotulo" style="color:rgba(255,255,255,.7)">Seu plano</span>
+              <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;gap:12px">
+                <div><b style="font-size:19px;display:block">Mensal · 2x por semana</b><span style="opacity:.8;font-size:13.5px">Terça e quinta às 19h</span></div>
+                <span class="chip" style="background:rgba(255,255,255,.18);color:#fff">Em dia</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px">
+                <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:10px"><b style="font-size:20px;display:block;font-family:var(--titulo);font-weight:400">7 de 8</b><span style="font-size:11px;opacity:.75">aulas no mês</span></div>
+                <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:10px"><b style="font-size:20px;display:block;font-family:var(--titulo);font-weight:400">1</b><span style="font-size:11px;opacity:.75">reposição</span></div>
+                <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:10px"><b style="font-size:20px;display:block;font-family:var(--titulo);font-weight:400" id="venc">05/12</b><span style="font-size:11px;opacity:.75">vencimento</span></div>
+              </div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Próximas aulas</span></div>
+              <div class="lista" id="minhas-aulas"></div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Reposição</span></div>
+              <div class="cartao" style="padding:16px">
+                <b>Você tem 1 reposição até o fim do mês</b>
+                <p class="suave" style="margin:6px 0 12px;font-size:13.5px">Escolha uma turma do seu nível com vaga. O professor recebe o aviso.</p>
+                <button class="botao botao-azul botao-p" onclick="irPara('reservar','experimental')">Marcar reposição</button>
+              </div>
+            </div>
+
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Lista de espera</span></div>
+              <div class="cartao" style="padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center">
+                <span><b>Segunda 20h · Avançado com Igor</b><span class="miudo" style="display:block;margin-top:4px">Se abrir vaga, você recebe no WhatsApp e tem 30 minutos para aceitar. Depois passa para a próxima pessoa.</span></span>
+                <span class="chip chip-sol">Na espera</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- EVENTOS -->
+          <div class="vista" data-vista="eventos">
+            <div class="cab"><div><span class="rotulo">Agenda do ASA</span><h1>Fim de semana e torneios</h1></div></div>
+            <div class="lista" id="eventos-lista"></div>
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Torneios</span></div>
+              <div class="lista" id="torneios-lista"></div>
+            </div>
+          </div>
+
+          <!-- PERFIL -->
+          <div class="vista" data-vista="perfil">
+            <div class="cab">
+              <div><span class="rotulo">Perfil</span><h1>Lucas</h1></div>
+              <span class="avatar" style="width:48px;height:48px;background:var(--azul);font-size:16px">L</span>
+            </div>
+            <div class="cartao evolucao">
+              <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center"><span class="rotulo">Sua evolução em novembro</span><span class="chip">Intermediário</span></div>
+              <div><span class="numero">7</span><span class="miudo">aulas</span></div>
+              <div><span class="numero">14h</span><span class="miudo">na areia</span></div>
+              <div><span class="numero">5</span><span class="miudo">jogos abertos</span></div>
+              <div><span class="numero">6</span><span class="miudo">semanas seguidas</span></div>
+              <div class="semanas" id="semanas"></div>
+              <span class="miudo" style="grid-column:1/-1">Cada barra é uma semana. As azuis são semanas com 2 aulas ou mais.</span>
+            </div>
+            <div class="secao">
+              <div class="secao-topo"><span class="rotulo">Pagamentos</span></div>
+              <div class="lista">
+                <div class="cartao linha-cartao"><span class="hora-g" style="font-size:20px">Nov</span><span><b>Mensalidade · Pix</b><span class="miudo">Pago em 04/11</span></span><span class="chip chip-verde">Pago</span></div>
+                <div class="cartao linha-cartao"><span class="hora-g" style="font-size:20px">Sáb</span><span><b>Day use · 2 pessoas</b><span class="miudo">Pago no app</span></span><span class="chip chip-verde">R$ 50</span></div>
+              </div>
+            </div>
+            <div class="secao">
+              <div class="cartao-noite" style="padding:18px">
+                <span class="rotulo">Chama alguém</span>
+                <h3 class="titulo-s" style="margin:10px 0 6px">Indique um amigo e o próximo day use é por conta da casa.</h3>
+                <p style="margin:0 0 14px;font-size:13.5px;color:rgba(244,241,234,.7)">Vale quando ele fizer a primeira aula ou o primeiro day use.</p>
+                <button class="botao botao-sol botao-p" onclick="ASA.aviso('Link copiado. É só mandar no WhatsApp.')">Copiar meu link</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <nav class="abas" id="abas">
+        <button data-ir="hoje" class="ativa"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Hoje</button>
+        <button data-ir="reservar"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M12 14v4M10 16h4"/></svg>Reservar</button>
+        <button data-ir="aulas"><svg viewBox="0 0 24 24"><ellipse cx="9" cy="9" rx="5.5" ry="6.5" transform="rotate(-35 9 9)"/><path d="M12.5 13l6.5 7M6 7l6 4M5 11l5-5"/></svg>Aulas</button>
+        <button data-ir="eventos"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>Agenda</button>
+        <button data-ir="perfil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Perfil</button>
+      </nav>
+
+      <div class="folha-fundo" onclick="fecharFolha()"></div>
+      <div class="folha" id="folha"></div>
+    </div>
+  </div>
+</div>
+<a class="selo-exemplo" href="index.html">Protótipo · <b>dados de exemplo</b></a>
+
+<script src="dados.js"></script>
+<script>
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const hoje = ASA.hoje();
+  const MEU_NIVEL = 2;
+  $("#marca-palco").innerHTML = ASA.marca("var(--azul)") + `<span class="marca-sub">Arena Schuster<br>Aracaju</span>`;
+  $("#data-hoje").textContent = ASA.dataCurta(hoje);
+  $("#ola").textContent = `${ASA.saudacao()}, Lucas`;
+
+  // ---------- navegação ----------
+  function irPara(vista, seg) {
+    $$(".vista").forEach((v) => v.classList.toggle("ativa", v.dataset.vista === vista));
+    $$("#abas button").forEach((b) => b.classList.toggle("ativa", b.dataset.ir === vista));
+    if (seg) escolherSegmento(seg);
+    $("#rolagem").scrollTop = 0;
+  }
+  $("#abas").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) irPara(b.dataset.ir); });
+
+  // ---------- movimento ----------
+  const mov = ASA.movimento(hoje);
+  const maxMov = Math.max(...mov.map((m) => m.pessoas));
+  let horaSel = mov.filter((m) => !m.fechado).reduce((a, b) => (b.pessoas > a.pessoas ? b : a)).h;
+  const indo = new Set();
+  $("#horas").innerHTML = mov.map((m) => `<button class="hora-btn ${m.fechado ? "fechada" : ""}" data-h="${m.h}"><span class="mini" style="height:${m.fechado ? 4 : Math.max(4, (m.pessoas / maxMov) * 30)}px"></span><small>${m.h}h</small></button>`).join("");
+  function mostrarHora(h) {
+    horaSel = h;
+    const m = mov.find((x) => x.h === h);
+    const extra = indo.has(h) ? 1 : 0;
+    $$("#horas .hora-btn").forEach((b) => b.classList.toggle("ativa", +b.dataset.h === h));
+    $("#mov-total").textContent = m.pessoas + extra;
+    $("#mov-legenda").textContent = `pessoas às ${h}h`;
+    $("#p-aula").textContent = m.aula;
+    $("#p-day").textContent = m.dayUse + extra;
+    $("#p-jogo").textContent = m.jogos * 4;
+    $("#livres").textContent = `${m.livres} quadra${m.livres === 1 ? "" : "s"} livre${m.livres === 1 ? "" : "s"}`;
+    const r = ASA.semente(h * 31 + hoje.getDate());
+    const a = 0.2 + r() * 0.25, c = 0.12 + r() * 0.2, b = 1 - a - c;
+    const spans = $$("#niveis-barra span");
+    [a, b, c].forEach((v, i) => (spans[i].style.flex = v));
+    const doNivel = Math.round((m.pessoas + extra) * b);
+    $("#do-nivel").textContent = doNivel;
+    const nomes = ASA.jogadores.filter((j) => j.nivel === MEU_NIVEL).map((j) => j.nome);
+    const ini = Math.floor(r() * 10);
+    $("#quem-av").innerHTML = ASA.avatares((indo.has(h) ? ["Lucas"] : []).concat(nomes.slice(ini, ini + 8)), 5);
+    const bt = $("#indo");
+    bt.classList.toggle("marcado", indo.has(h));
+    bt.textContent = indo.has(h) ? `✓ Você vai às ${h}h · toque para desfazer` : `Tô indo às ${h}h`;
+  }
+  $("#horas").addEventListener("click", (e) => { const b = e.target.closest(".hora-btn"); if (b) mostrarHora(+b.dataset.h); });
+  $("#indo").addEventListener("click", () => {
+    if (indo.has(horaSel)) { indo.delete(horaSel); ASA.aviso("Tudo bem, tiramos você das " + horaSel + "h."); }
+    else { indo.add(horaSel); ASA.aviso(`Marcado. Quem joga no seu nível às ${horaSel}h vê que você vai.`); }
+    mostrarHora(horaSel);
+  });
+  mostrarHora(horaSel);
+  setTimeout(() => { const b = $(`#horas .hora-btn[data-h="${horaSel}"]`); if (b) b.scrollIntoView({ inline: "center", block: "nearest" }); }, 50);
+
+  // ---------- jogos abertos ----------
+  const entrei = new Set();
+  function desenharJogos() {
+    $("#jogos").innerHTML = ASA.jogosAbertos.map((j, i) => {
+      const dentro = entrei.has(i);
+      const faltam = j.faltam - (dentro ? 1 : 0);
+      return `<div class="cartao linha-cartao">
+        <span class="hora-g">${+j.hora.slice(0, 2)}h<small>${{ 1: "Inic.", 2: "Inter.", 3: "Avanç." }[j.nivel]}</small></span>
+        <span><b>${j.tipo}</b><span class="miudo">${faltam > 0 ? `Falta${faltam > 1 ? "m" : ""} ${faltam}` : "Completo"} · aberto por ${j.quem}</span><span style="display:block;margin-top:8px">${ASA.avatares((dentro ? ["Lucas"] : []).concat(j.ja), 4)}</span></span>
+        <button class="botao ${dentro ? "botao-linha" : "botao-azul"} botao-p" data-jogo="${i}">${dentro ? "Sair" : "Entrar"}</button>
+      </div>`;
+    }).join("");
+  }
+  $("#jogos").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-jogo]"); if (!b) return;
+    const i = +b.dataset.jogo, j = ASA.jogosAbertos[i];
+    if (entrei.has(i)) { entrei.delete(i); ASA.aviso("Você saiu do jogo. A vaga voltou a aparecer."); }
+    else { entrei.add(i); ASA.aviso(`Você entrou. ${j.quem} recebeu o aviso no WhatsApp.`); }
+    desenharJogos();
+  });
+  desenharJogos();
+
+  // ---------- minhas aulas ----------
+  const minhas = [];
+  for (let i = 0, d = new Date(hoje); minhas.length < 4 && i < 20; i++, d = ASA.somaDias(d, 1)) {
+    if (d.getDay() === 2 || d.getDay() === 4) minhas.push({ data: new Date(d), hora: "19h", prof: "Higor", nivel: "Intermediário", resposta: minhas.length === 1 ? "sim" : null, confirmados: 6 + (i % 3) });
+  }
+  function cartaoAula(a, i) {
+    const resp = a.resposta;
+    return `<div class="cartao aula">
+      <div class="aula-topo">
+        <div><span class="rotulo">${ASA.dataCurta(a.data)} · ${a.hora}</span><h3>${a.nivel} com ${a.prof}</h3><span class="miudo">${a.confirmados + (resp === "sim" ? 1 : 0)} de 8 confirmados · quadra 4</span></div>
+        ${resp === "sim" ? `<span class="chip chip-verde">Vou</span>` : resp === "nao" ? `<span class="chip chip-areia">Não vou</span>` : `<span class="chip chip-sol">Responder</span>`}
+      </div>
+      <div class="vou"><button class="sim ${resp === "sim" ? "marcado" : ""}" data-aula="${i}" data-r="sim">Vou</button><button class="nao ${resp === "nao" ? "marcado" : ""}" data-aula="${i}" data-r="nao">Não vou</button></div>
+      ${resp === "nao" ? `<div class="nota"><span>↺</span><span>Sua vaga foi oferecida para a lista de espera e você ganhou uma reposição.</span></div>` : `<div class="nota"><span>◷</span><span>Responda até as 17h. Se não for, a vaga vai para quem está na espera e você ganha reposição.</span></div>`}
+    </div>`;
+  }
+  function desenharAulas() {
+    $("#proxima-aula").innerHTML = cartaoAula(minhas[0], 0);
+    $("#minhas-aulas").innerHTML = minhas.map(cartaoAula).join("");
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-aula]"); if (!b) return;
+    const a = minhas[+b.dataset.aula];
+    a.resposta = a.resposta === b.dataset.r ? null : b.dataset.r;
+    if (a.resposta === "sim") ASA.aviso("Presença confirmada. O Higor já vê na lista dele.");
+    if (a.resposta === "nao") ASA.aviso("Avisado. A vaga foi para a lista de espera.");
+    desenharAulas();
+  });
+  desenharAulas();
+
+  // ---------- eventos ----------
+  $("#eventos-mini").innerHTML = ASA.eventos.map((ev) => `<div class="ev" style="--foto:url(${ev.foto})"><span class="chip chip-noite" style="align-self:flex-start">${ev.quando} · ${ev.hora}</span><b>${ev.titulo}</b></div>`).join("");
+  $("#eventos-lista").innerHTML = ASA.eventos.map((ev, i) => `
+    <div class="cartao" style="overflow:hidden">
+      <div style="height:150px;background:url(${ev.foto}) center/cover"></div>
+      <div style="padding:16px">
+        <span class="rotulo">${ev.tag} · ${ev.quando}, ${ev.hora}</span>
+        <h3 class="titulo-s" style="margin:6px 0">${ev.titulo}</h3>
+        <p class="suave" style="margin:0 0 14px;font-size:13.5px">${ev.texto}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center">${ASA.avatares(ASA.jogadores.slice(i * 6, i * 6 + 12).map((j) => j.nome), 4)}<button class="botao botao-azul botao-p" onclick="ASA.aviso('Confirmado. Você recebe o lembrete no dia.')">Eu vou</button></div>
+      </div>
+    </div>`).join("");
+  $("#torneios-lista").innerHTML = ASA.torneios.map((t) => `
+    <div class="cartao linha-cartao" style="grid-template-columns:1fr auto">
+      <span><span class="rotulo">${t.quando}</span><b style="margin-top:4px">${t.nome}</b><span class="miudo">${t.texto}</span></span>
+      <button class="botao botao-linha botao-p" onclick="ASA.aviso('Você recebe o aviso quando abrirem as inscrições.')">Avise-me</button>
+    </div>`).join("");
+
+  // ---------- perfil ----------
+  $("#semanas").innerHTML = [1, 2, 2, 1, 2, 3, 2, 2, 2, 2, 3, 2].map((n) => `<span class="${n >= 2 ? "cheia" : ""}" style="height:${n * 30}%"></span>`).join("");
+
+  // ---------- reservar ----------
+  function escolherSegmento(seg) {
+    $$("#segmentos button").forEach((b) => b.classList.toggle("ativo", b.dataset.seg === seg));
+    $$("[data-painel]").forEach((p) => (p.hidden = p.dataset.painel !== seg));
+  }
+  $("#segmentos").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) escolherSegmento(b.dataset.seg); });
+  function faixaDias(el, aoEscolher, inicio = 0) {
+    const dias = [...Array(10)].map((_, i) => ASA.somaDias(hoje, i));
+    el.innerHTML = dias.map((d, i) => `<button class="dia ${i === inicio ? "ativo" : ""}" data-i="${i}"><small>${i === 0 ? "Hoje" : ASA.DIAS_CURTOS[d.getDay()]}</small><b>${d.getDate()}</b></button>`).join("");
+    el.addEventListener("click", (e) => { const b = e.target.closest(".dia"); if (!b) return; $$(".dia", el).forEach((x) => x.classList.toggle("ativo", x === b)); aoEscolher(dias[+b.dataset.i]); });
+    return dias[inicio];
+  }
+
+  // experimental
+  let diaExp = ASA.somaDias(hoje, 1), nivelExp = 1, turmaEscolhida = null;
+  const primeiroUtil = [...Array(10)].findIndex((_, i) => { const d = ASA.somaDias(hoje, i); return i > 0 && d.getDay() > 0 && d.getDay() < 6; });
+  diaExp = faixaDias($("#dias-exp"), (d) => { diaExp = d; turmaEscolhida = null; desenharExp(); }, primeiroUtil);
+  $("#niveis-exp").innerHTML = [1, 2, 3, "K"].map((n) => `<button data-n="${n}" class="${n === 1 ? "ativo" : ""}">${ASA.NIVEIS[n]}</button>`).join("");
+  $("#niveis-exp").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; nivelExp = b.dataset.n === "K" ? "K" : +b.dataset.n; turmaEscolhida = null; $$("#niveis-exp button").forEach((x) => x.classList.toggle("ativo", x === b)); desenharExp(); });
+  function desenharExp() {
+    const ts = ASA.turmasDoDia(diaExp).filter((t) => t.nivel === nivelExp);
+    if (!ts.length) { $("#turmas-exp").innerHTML = `<div class="cartao vazio">Sem turma desse nível neste dia. ${diaExp.getDay() === 0 || diaExp.getDay() === 6 ? "No fim de semana tem day use e o Play do sábado." : "Tente outro dia."}</div>`; $("#total-exp").style.display = "none"; return; }
+    $("#turmas-exp").innerHTML = ts.map((t) => {
+      const livres = t.vagas - t.confirmados;
+      return `<div class="cartao linha-cartao turma-op ${turmaEscolhida === t.id ? "escolhida" : ""}" data-t="${t.id}">
+        <span class="hora-g">${+t.hora.slice(0, 2)}h<small>Q${t.quadra}</small></span>
+        <span><b>${t.prof.nome}</b><span class="miudo">${t.confirmados} de ${t.vagas} alunos</span><div class="ocupacao ${livres ? "" : "cheia"}" style="margin-top:8px"><span style="width:${(t.confirmados / t.vagas) * 100}%"></span></div></span>
+        <span class="chip ${livres ? "chip-verde" : "chip-sol"}">${livres ? livres + (livres > 1 ? " vagas" : " vaga") : "Cheia"}</span>
+      </div>`;
+    }).join("");
+    const t = ts.find((x) => x.id === turmaEscolhida);
+    $("#total-exp").style.display = t ? "flex" : "none";
+    if (t) {
+      const cheia = t.confirmados >= t.vagas;
+      $("#exp-resumo").textContent = `${ASA.dataCurta(diaExp)} · ${+t.hora.slice(0, 2)}h · ${t.prof.curto}`;
+      $("#exp-preco").textContent = cheia ? "Turma cheia" : "Experimental · grátis";
+      $("#exp-acao").textContent = cheia ? "Entrar na espera" : "Marcar aula";
+      $("#exp-acao").onclick = () => cheia ? ASA.aviso(`Você está na espera. Se abrir vaga, avisamos no WhatsApp.`) : abrirFolha("pago", { resumo: $("#exp-resumo").textContent + " · experimental", titulo: "Aula experimental marcada", texto: `O ${t.prof.curto} já vê o seu nome na lista. Você recebe o lembrete no WhatsApp no dia, com o endereço e o que levar.` });
+    }
+  }
+  $("#turmas-exp").addEventListener("click", (e) => { const c = e.target.closest("[data-t]"); if (!c) return; turmaEscolhida = c.dataset.t; desenharExp(); setTimeout(() => $("#total-exp").scrollIntoView({ block: "nearest", behavior: "smooth" }), 30); });
+  desenharExp();
+
+  // day use
+  // período que ainda não passou hoje
+  const hAgora = new Date().getHours();
+  let diaDay = hoje, qtd = 2, periodo = hAgora < 11 ? "Manhã" : hAgora < 17 ? "Tarde" : "Noite";
+  $$("#periodo-day button").forEach((b) => b.classList.toggle("ativo", b.dataset.p === periodo));
+  diaDay = faixaDias($("#dias-day"), (d) => { diaDay = d; desenharDay(); });
+  $("#periodo-day").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; periodo = b.dataset.p; $$("#periodo-day button").forEach((x) => x.classList.toggle("ativo", x === b)); desenharDay(); });
+  $("#menos").onclick = () => { qtd = Math.max(1, qtd - 1); desenharDay(); };
+  $("#mais").onclick = () => { qtd = Math.min(12, qtd + 1); desenharDay(); };
+  function desenharDay() {
+    $("#qtd").textContent = qtd;
+    $("#day-total").textContent = ASA.reais(25 * qtd);
+    $("#day-resumo").textContent = `${ASA.dataCurta(diaDay)} · ${periodo} · ${qtd} ${qtd > 1 ? "pessoas" : "pessoa"}`;
+    $("#nota-sabado").style.display = diaDay.getDay() === 6 ? "flex" : "none";
+    const m = ASA.movimento(diaDay);
+    const faixa = periodo === "Manhã" ? [7, 11] : periodo === "Tarde" ? [12, 17] : [18, 21];
+    const soma = Math.max(...m.filter((x) => x.h >= faixa[0] && x.h <= faixa[1]).map((x) => x.pessoas));
+    $("#day-pessoas").textContent = soma;
+    $("#day-av").innerHTML = ASA.avatares(ASA.jogadores.slice(diaDay.getDate() % 20, diaDay.getDate() % 20 + 9).map((j) => j.nome), 4);
+  }
+  desenharDay();
+
+  // quadra
+  let diaQ = hoje, quadraSel = null;
+  diaQ = faixaDias($("#dias-q"), (d) => { diaQ = d; quadraSel = null; desenharQuadra(); });
+  function desenharQuadra() {
+    const r = ASA.semente(diaQ.getDate() * 7 + 1);
+    const fds = diaQ.getDay() === 0 || diaQ.getDay() === 6;
+    const horas = fds ? [7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 21] : [7, 8, 9, 10, 15, 16, 17, 18, 19, 20, 21];
+    let g = `<span></span>` + [...Array(12)].map((_, i) => `<span class="cab-q">Q${i + 1}</span>`).join("");
+    horas.forEach((h) => {
+      g += `<span class="h">${h}h</span>`;
+      for (let q = 1; q <= 12; q++) {
+        const p = fds ? (h <= 11 ? 0.7 : 0.45) : h >= 18 ? 0.85 : h >= 15 ? 0.55 : 0.35;
+        const passou = diaQ.getTime() === hoje.getTime() && h <= new Date().getHours();
+        const ocupada = r() < p || passou;
+        const sel = quadraSel && quadraSel.h === h && quadraSel.q === q;
+        g += `<button class="${ocupada ? "ocupada" : ""} ${sel ? "escolhida" : ""}" data-h="${h}" data-q="${q}">${ocupada ? "" : sel ? "✓" : "livre"}</button>`;
+      }
+    });
+    $("#grade-q").innerHTML = g;
+    $("#q-resumo").textContent = quadraSel ? `${ASA.dataCurta(diaQ)} · ${quadraSel.h}h · quadra ${quadraSel.q}` : "Escolha um horário verde";
+  }
+  $("#grade-q").addEventListener("click", (e) => { const b = e.target.closest("button[data-h]"); if (!b || b.classList.contains("ocupada")) return; quadraSel = { h: +b.dataset.h, q: +b.dataset.q }; desenharQuadra(); });
+  $("#q-acao").onclick = () => quadraSel ? abrirPix("R$ 90", $("#q-resumo").textContent) : ASA.aviso("Escolha um horário verde na grade.");
+  desenharQuadra();
+
+  // evento
+  $("#ev-data").value = ASA.somaDias(hoje, 17).toISOString().slice(0, 10);
+  ["#tipo-ev"].forEach((s) => $(s).addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; $$(s + " button").forEach((x) => x.classList.toggle("ativo", x === b)); }));
+  $("#inclui-ev").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) b.classList.toggle("ativo"); });
+
+  // ---------- folhas ----------
+  function abrirFolha(tipo, dados = {}) {
+    const f = $("#folha");
+    if (tipo === "pix") {
+      f.innerHTML = `<div class="puxador"></div><span class="rotulo">Pagamento</span>
+        <h3 class="titulo-s" style="margin:8px 0 2px">${dados.valor} no Pix</h3><span class="miudo">${dados.resumo}</span>
+        <div class="qr">${qr()}</div>
+        <div class="codigo-pix">00020126580014BR.GOV.BCB.PIX0136asa-beach-tennis-exemplo5204000053039865802BR5925ASA BEACH TENNIS6007ARACAJU</div>
+        <div style="display:grid;gap:8px;margin-top:14px">
+          <button class="botao botao-azul botao-bloco" onclick="ASA.aviso('Código copiado.')">Copiar código Pix</button>
+          <button class="botao botao-linha botao-bloco" onclick="abrirFolha('pago', {resumo: '${dados.resumo}'})">Simular pagamento feito</button>
+        </div>`;
+    } else if (tipo === "pago") {
+      f.innerHTML = `<div class="puxador"></div><div class="ok-grande">✓</div>
+        <h3 class="titulo-s" style="text-align:center;margin:0">${dados.titulo || "Reserva paga e confirmada"}</h3>
+        <p class="suave" style="text-align:center;margin:8px 0 18px">${dados.resumo}<br>${dados.texto || "O comprovante chegou no seu WhatsApp e a recepção já vê seu nome como pago. Ninguém precisa te cobrar na quadra."}</p>
+        <button class="botao botao-sol botao-bloco" onclick="fecharFolha();irPara('hoje')">Ver quem mais vai</button>`;
+    } else if (tipo === "novo-jogo") {
+      f.innerHTML = `<div class="puxador"></div><span class="rotulo">Abrir jogo</span>
+        <h3 class="titulo-s" style="margin:8px 0 6px">Chame gente do seu nível</h3>
+        <p class="suave" style="margin:0 0 10px;font-size:13.5px">Quem estiver livre nesse horário recebe o convite no app.</p>
+        <div class="campo"><label>Horário</label><select><option>Hoje às 19h</option><option selected>Hoje às 20h</option><option>Hoje às 21h</option><option>Amanhã às 19h</option></select></div>
+        <div class="campo"><label>Nível</label><select><option>Iniciante</option><option selected>Intermediário</option><option>Avançado</option><option>Misturado</option></select></div>
+        <div class="campo"><label>Formato</label><select><option>Dupla mista</option><option>Dupla masculina</option><option>Dupla feminina</option><option>Rachão (vai entrando)</option></select></div>
+        <button class="botao botao-sol botao-bloco" style="margin-top:16px" onclick="fecharFolha();ASA.aviso('Jogo aberto. 14 pessoas do seu nível receberam o convite.')">Abrir jogo</button>`;
+    }
+    $("#tela").classList.add("folha-aberta");
+  }
+  function abrirPix(valor, resumo) { abrirFolha("pix", { valor, resumo }); }
+  function fecharFolha() { $("#tela").classList.remove("folha-aberta"); }
+  function qr() {
+    const r = ASA.semente(42); let s = `<svg viewBox="0 0 29 29" width="100%" height="100%" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/>`;
+    const olho = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" fill="#061640"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" fill="#061640"/>`;
+    for (let y = 0; y < 29; y++) for (let x = 0; x < 29; x++) { const canto = (x < 8 && y < 8) || (x > 20 && y < 8) || (x < 8 && y > 20); if (!canto && r() > 0.52) s += `<rect x="${x}" y="${y}" width="1" height="1" fill="#061640"/>`; }
+    return s + olho(0, 0) + olho(22, 0) + olho(0, 22) + `</svg>`;
+  }
+
+  // ---------- entrada por link ----------
+  const alvo = location.hash.replace("#", "");
+  if (alvo.startsWith("reservar")) irPara("reservar", alvo.split("-")[1] || "experimental");
+  addEventListener("hashchange", () => { const a = location.hash.replace("#", ""); if (a.startsWith("reservar")) irPara("reservar", a.split("-")[1] || "experimental"); });
+</script>
+</body>
+</html>
