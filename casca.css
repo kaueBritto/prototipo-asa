@@ -11,7 +11,7 @@
 
 .vista { display: none; animation: entrar .28s ease; }
 .vista.ativa { display: block; }
-@keyframes entrar { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes entrar { from { transform: translateY(6px); } to { transform: none; } }
 
 .secao { margin-top: 26px; }
 .secao-topo { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; gap: 10px; }
